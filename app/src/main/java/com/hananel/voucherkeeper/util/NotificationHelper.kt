@@ -6,7 +6,10 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.hananel.voucherkeeper.R
+import com.hananel.voucherkeeper.data.preferences.PreferencesManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,7 +18,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class NotificationHelper @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val preferencesManager: PreferencesManager
 ) {
     
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -63,7 +67,14 @@ class NotificationHelper @Inject constructor(
      * Send notification for a new approved voucher.
      */
     fun notifyVoucherApproved(merchantName: String?) {
+        // Check permission
         if (!PermissionHandler.hasNotificationPermission(context)) {
+            return
+        }
+        
+        // Check user preference
+        val notifyEnabled = runBlocking { preferencesManager.notifyApprovedFlow.first() }
+        if (!notifyEnabled) {
             return
         }
         
@@ -88,7 +99,14 @@ class NotificationHelper @Inject constructor(
      * Send notification for a new pending voucher.
      */
     fun notifyPendingReview() {
+        // Check permission
         if (!PermissionHandler.hasNotificationPermission(context)) {
+            return
+        }
+        
+        // Check user preference
+        val notifyEnabled = runBlocking { preferencesManager.notifyPendingFlow.first() }
+        if (!notifyEnabled) {
             return
         }
         
