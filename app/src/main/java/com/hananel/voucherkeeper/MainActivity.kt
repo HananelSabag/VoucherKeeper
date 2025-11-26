@@ -56,9 +56,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Fix for screen being cut at top - disable edge-to-edge insets
-        WindowCompat.setDecorFitsSystemWindows(window, true)
-        
         setContent {
             VoucherKeeperTheme {
                 VoucherKeeperAppWithOnboarding(preferencesManager)
