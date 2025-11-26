@@ -5,9 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
@@ -122,7 +122,7 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
     }
     
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        modifier = Modifier.statusBarsPadding(),
         bottomBar = {
             NavigationBar {
                 // Pending Review (Left)
