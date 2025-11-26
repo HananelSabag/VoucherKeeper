@@ -1,0 +1,144 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Voucher Keeper</string>
+    
+    <!-- Bottom Navigation -->
+    <string name="nav_approved">Approved</string>
+    <string name="nav_pending">Pending</string>
+    <string name="nav_approved_senders">Contacts</string>
+    <string name="nav_settings">Settings</string>
+    
+    <!-- Approved Vouchers Screen -->
+    <string name="approved_title">My Vouchers</string>
+    <string name="approved_empty_title">No vouchers yet</string>
+    <string name="approved_empty_message">When you receive a voucher via SMS, it will appear here automatically.</string>
+    
+    <!-- Pending Review Screen -->
+    <string name="pending_title">Pending Review</string>
+    <string name="pending_empty_title">All clear!</string>
+    <string name="pending_empty_message">No messages waiting for your review.</string>
+    <string name="pending_badge_count">%1$d pending</string>
+    
+    <!-- Voucher Card -->
+    <string name="voucher_amount">Amount: %1$s</string>
+    <string name="voucher_code">Code: %1$s</string>
+    <string name="voucher_url">Link</string>
+    <string name="voucher_from">From: %1$s</string>
+    <string name="voucher_date">Received: %1$s</string>
+    <string name="voucher_view_details">View Details</string>
+    
+    <!-- Actions -->
+    <string name="action_approve">Approve</string>
+    <string name="action_reject">Reject</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_copy_code">Copy Code</string>
+    <string name="action_open_link">Open Link</string>
+    <string name="action_add_sender">Add Sender to Approved List</string>
+    
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notify_approved">Notify on new voucher</string>
+    <string name="settings_notify_pending">Notify on pending review</string>
+    <string name="settings_filters">Filters</string>
+    <string name="settings_strict_mode">Only accept from approved senders</string>
+    <string name="settings_strict_mode_desc">Unknown senders will be rejected automatically</string>
+    <string name="settings_approved_senders">Manage Approved Senders</string>
+    <string name="settings_trusted_domains">Manage Trusted Domains</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_author">Created by Hananel Sabag</string>
+    
+    <!-- Language Options -->
+    <string name="language_auto">System Default</string>
+    <string name="language_english">English</string>
+    <string name="language_hebrew">עברית</string>
+    
+    <!-- Theme Options -->
+    <string name="theme_system">System Default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    
+    <!-- Approved Senders Management -->
+    <string name="approved_senders_title">Approved Senders</string>
+    <string name="approved_senders_add">Add Sender</string>
+    <string name="approved_senders_phone_hint">Phone number</string>
+    <string name="approved_senders_name_hint">Sender name (optional)</string>
+    <string name="approved_senders_empty">No approved senders yet</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">Welcome to Voucher Keeper</string>
+    <string name="onboarding_welcome_message">Smart assistant for Cibus, Pluxee, and digital vouchers</string>
+    <string name="onboarding_auto_title">🤖 Auto-Detect</string>
+    <string name="onboarding_auto_desc">Analyzes SMS and saves real vouchers. Filters out spam.</string>
+    <string name="onboarding_manual_title">✋ Full Control</string>
+    <string name="onboarding_manual_desc">Add vouchers manually or review uncertain messages.</string>
+    <string name="onboarding_approved_senders_title">Approved Senders</string>
+    <string name="onboarding_approved_senders_desc">Add phone numbers OR saved names (\"Shufersal\", \"Leumi\"). Auto-save messages from them.</string>
+    <string name="onboarding_strict_mode_title">🔒 Strict Mode</string>
+    <string name="onboarding_strict_mode_desc">Enable to save ONLY from approved senders. Disable to let our smart engine analyze all.</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_done">Let\'s Go!</string>
+    <string name="onboarding_dont_show_again">Don\'t show this again</string>
+    
+    <!-- Permissions -->
+    <string name="permission_sms_title">SMS Permission Required</string>
+    <string name="permission_sms_message">Voucher Keeper needs SMS access to automatically detect vouchers from incoming messages.</string>
+    <string name="permission_notification_title">Notification Permission</string>
+    <string name="permission_notification_message">Allow notifications to stay updated about new vouchers.</string>
+    <string name="permission_grant">Grant Permission</string>
+    <string name="permission_deny">Not Now</string>
+    <string name="permission_denied_message">Some features may not work without this permission.</string>
+    
+    <!-- Notifications -->
+    <string name="notification_channel_vouchers">Vouchers</string>
+    <string name="notification_channel_pending">Pending Review</string>
+    <string name="notification_voucher_approved_title">New Voucher Added</string>
+    <string name="notification_voucher_approved_message">%1$s voucher received</string>
+    <string name="notification_pending_title">Voucher Awaiting Review</string>
+    <string name="notification_pending_message">A message needs your approval</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_delete_title">Delete Voucher?</string>
+    <string name="dialog_delete_message">This action cannot be undone.</string>
+    <string name="dialog_reject_title">Reject Message?</string>
+    <string name="dialog_reject_message">This message will be permanently discarded.</string>
+    
+    <!-- Toast Messages -->
+    <string name="toast_copied">Copied to clipboard</string>
+    <string name="toast_approved">Voucher approved</string>
+    <string name="toast_rejected">Message rejected</string>
+    <string name="toast_deleted">Voucher deleted</string>
+    <string name="toast_sender_added">Sender added to approved list</string>
+    
+    <!-- Errors -->
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="error_no_sms_permission">SMS permission not granted</string>
+    <string name="error_invalid_phone">Invalid phone number</string>
+    
+    <!-- Add Voucher Screen -->
+    <string name="add_voucher_title">Add Voucher Manually</string>
+    <string name="add_voucher_info">Fill in voucher details. Merchant name + URL or code required.</string>
+    <string name="add_voucher_merchant">Merchant Name</string>
+    <string name="add_voucher_merchant_required">Merchant name is required</string>
+    <string name="add_voucher_amount_label">Amount (optional)</string>
+    <string name="add_voucher_url_label">Voucher URL</string>
+    <string name="add_voucher_code_label">Redemption Code</string>
+    <string name="add_voucher_access_point_required">URL or code is required</string>
+    <string name="add_voucher_sender_label">Sender Phone (optional)</string>
+    <string name="add_voucher_save">Save Voucher</string>
+    
+    <!-- Content Descriptions (Accessibility) -->
+    <string name="cd_voucher_card">Voucher card</string>
+    <string name="cd_approve_button">Approve voucher</string>
+    <string name="cd_reject_button">Reject voucher</string>
+    <string name="cd_help_button">Help</string>
+    <string name="cd_settings_button">Settings</string>
+    <string name="cd_back_button">Back</string>
+    <string name="cd_add_button">Add voucher</string>
+</resources>
