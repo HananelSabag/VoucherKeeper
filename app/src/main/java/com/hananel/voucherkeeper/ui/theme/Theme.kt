@@ -33,11 +33,19 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun VoucherKeeperTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeSetting: String = "system", // "system", "light", "dark"
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val systemDarkTheme = isSystemInDarkTheme()
+    
+    val darkTheme = when (themeSetting) {
+        "light" -> false
+        "dark" -> true
+        else -> systemDarkTheme  // "system" or any other value
+    }
+    
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

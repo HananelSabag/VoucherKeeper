@@ -26,11 +26,13 @@ fun SettingsScreen(
     onBack: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val theme by viewModel.theme.collectAsState()
     val language by viewModel.language.collectAsState()
     val notifyApproved by viewModel.notifyApproved.collectAsState()
     val notifyPending by viewModel.notifyPending.collectAsState()
     val strictMode by viewModel.strictMode.collectAsState()
+    var showRestartDialog by remember { mutableStateOf(false) }
     
     Scaffold(
         topBar = {
@@ -80,7 +82,6 @@ fun SettingsScreen(
                 ),
                 onValueChange = { 
                     viewModel.setTheme(it)
-                    // Theme will be applied on next app restart or by system
                 }
             )
             
@@ -94,7 +95,7 @@ fun SettingsScreen(
                 ),
                 onValueChange = { 
                     viewModel.setLanguage(it)
-                    // Language will be applied on next app restart
+                    showRestartDialog = true
                 }
             )
             
@@ -165,6 +166,29 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+    
+    // Restart dialog for language changes
+    if (showRestartDialog) {
+        AlertDialog(
+            onDismissRequest = { showRestartDialog = false },
+            title = { Text(stringResource(R.string.settings_restart_required)) },
+            text = { Text(stringResource(R.string.settings_restart_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        (context as? android.app.Activity)?.recreate()
+                    }
+                ) {
+                    Text(stringResource(R.string.settings_restart_now))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRestartDialog = false }) {
+                    Text(stringResource(R.string.settings_restart_later))
+                }
+            }
+        )
     }
 }
 

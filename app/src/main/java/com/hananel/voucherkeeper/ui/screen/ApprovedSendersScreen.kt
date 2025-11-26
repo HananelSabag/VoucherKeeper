@@ -119,7 +119,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "הוסף שולחים מהימנים כדי לשמור הודעות אוטומטית",
+            text = stringResource(R.string.approved_senders_empty_desc),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -180,8 +180,8 @@ private fun SenderCard(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("מחק שולח?") },
-            text = { Text("האם אתה בטוח שברצונך להסיר את ${sender.name ?: sender.phone} מהרשימה?") },
+            title = { Text(stringResource(R.string.approved_senders_delete_title)) },
+            text = { Text(stringResource(R.string.approved_senders_delete_message, sender.name ?: sender.phone)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -222,7 +222,7 @@ private fun AddSenderDialog(
                         showError = false
                     },
                     label = { Text(stringResource(R.string.approved_senders_phone_hint) + " *") },
-                    placeholder = { Text("050-1234567 או Shufersal") },
+                    placeholder = { Text(stringResource(R.string.approved_senders_phone_placeholder)) },
                     isError = showError && phone.isBlank(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -232,13 +232,13 @@ private fun AddSenderDialog(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(stringResource(R.string.approved_senders_name_hint)) },
-                    placeholder = { Text("שופרסל") },
+                    placeholder = { Text(stringResource(R.string.approved_senders_name_placeholder)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
                 Text(
-                    text = "טיפ: אפשר להוסיף מספר או שם שמור (כמו \"שופרסל\", \"לאומי\")",
+                    text = stringResource(R.string.approved_senders_tip),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -57,7 +58,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         setContent {
-            VoucherKeeperTheme {
+            val theme by preferencesManager.themeFlow.collectAsState(initial = "system")
+            
+            VoucherKeeperTheme(
+                themeSetting = theme
+            ) {
                 VoucherKeeperAppWithOnboarding(preferencesManager)
             }
         }

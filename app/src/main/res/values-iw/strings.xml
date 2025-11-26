@@ -40,6 +40,10 @@
     <string name="settings_appearance">מראה</string>
     <string name="settings_language">שפה</string>
     <string name="settings_theme">ערכת נושא</string>
+    <string name="settings_restart_required">נדרש אתחול</string>
+    <string name="settings_restart_message">אנא הפעל מחדש את האפליקציה כדי להחיל את השינויים בערכת נושא/שפה.</string>
+    <string name="settings_restart_now">הפעל מחדש עכשיו</string>
+    <string name="settings_restart_later">מאוחר יותר</string>
     <string name="settings_notifications">התראות</string>
     <string name="settings_notify_approved">התראה על שובר חדש</string>
     <string name="settings_notify_pending">התראה על הודעה הממתינה לבדיקה</string>
@@ -68,21 +72,36 @@
     <string name="approved_senders_phone_hint">מספר טלפון</string>
     <string name="approved_senders_name_hint">שם שולח (אופציונלי)</string>
     <string name="approved_senders_empty">אין שולחים מאושרים עדיין</string>
+    <string name="approved_senders_empty_desc">הוסף שולחים מהימנים כדי לשמור הודעות אוטומטית</string>
+    <string name="approved_senders_delete_title">מחק שולח?</string>
+    <string name="approved_senders_delete_message">האם אתה בטוח שברצונך להסיר את %1$s מהרשימה?</string>
+    <string name="approved_senders_phone_placeholder">050-1234567 או שופרסל</string>
+    <string name="approved_senders_name_placeholder">שופרסל</string>
+    <string name="approved_senders_tip">טיפ: אפשר להוסיף מספר או שם שמור (כמו \"שופרסל\", \"לאומי\")</string>
     
     <!-- Onboarding -->
     <string name="onboarding_welcome_title">ברוכים הבאים ל-Voucher Keeper</string>
     <string name="onboarding_welcome_message">עוזר חכם לסיבוס, פלוקסי ושוברים דיגיטליים</string>
+    <string name="onboarding_how_it_works">איך זה עובד</string>
     <string name="onboarding_auto_title">🤖 זיהוי אוטומטי</string>
     <string name="onboarding_auto_desc">מנתח SMS ושומר שוברים אמיתיים. מסנן ספאם.</string>
     <string name="onboarding_manual_title">✋ שליטה מלאה</string>
     <string name="onboarding_manual_desc">הוסף שוברים ידנית או בדוק הודעות לא ודאיות.</string>
-    <string name="onboarding_approved_senders_title">שולחים מאושרים</string>
-    <string name="onboarding_approved_senders_desc">הוסף מספרים או שמות שמורים (\"שופרסל\", \"לאומי\"). שמירה אוטומטית מהם.</string>
+    <string name="onboarding_privacy_title">הפרטיות שלך חשובה לנו</string>
+    <string name="onboarding_privacy_desc">אנו מעבדים רק טקסט SMS במקום במכשיר שלך. שום מידע לא עוזב את הטלפון.</string>
+    <string name="onboarding_permissions_title">הרשאות שאנחנו צריכים</string>
+    <string name="onboarding_permissions_sms">📱 SMS - לקריאת שוברים נכנסים</string>
+    <string name="onboarding_permissions_notif">🔔 התראות - להתראה על שוברים חדשים</string>
+    <string name="onboarding_permissions_missing">⚠️ חסרות כמה הרשאות. אפשר אותן לפונקציונליות מלאה.</string>
+    <string name="onboarding_grant_permissions">אפשר הרשאות</string>
+    <string name="onboarding_approved_senders_title">שולחים מאושרים (אופציונלי)</string>
+    <string name="onboarding_approved_senders_desc">הוסף מספרי טלפון או שמות שמורים (\"שופרסל\", \"לאומי\"). שמירה אוטומטית מהם.</string>
     <string name="onboarding_strict_mode_title">🔒 מצב מוגבל</string>
-    <string name="onboarding_strict_mode_desc">הפעל כדי לשמור רק משולחים מאושרים. כבה למנוע חכם שמנתח הכל.</string>
+    <string name="onboarding_strict_mode_desc">הפעל כדי לשמור רק משולחים מאושרים. כבה כדי לאפשר למנוע החכם לנתח הכל.</string>
+    <string name="onboarding_strict_mode_enable">הפעל מצב מוגבל</string>
     <string name="onboarding_next">הבא</string>
+    <string name="onboarding_skip">דלג</string>
     <string name="onboarding_done">בואו נתחיל!</string>
-    <string name="onboarding_dont_show_again">אל תציג שוב</string>
     
     <!-- Permissions -->
     <string name="permission_sms_title">נדרשת הרשאת SMS</string>

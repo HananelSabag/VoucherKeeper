@@ -40,6 +40,10 @@
     <string name="settings_appearance">Appearance</string>
     <string name="settings_language">Language</string>
     <string name="settings_theme">Theme</string>
+    <string name="settings_restart_required">Restart Required</string>
+    <string name="settings_restart_message">Please restart the app to apply theme/language changes.</string>
+    <string name="settings_restart_now">Restart Now</string>
+    <string name="settings_restart_later">Later</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notify_approved">Notify on new voucher</string>
     <string name="settings_notify_pending">Notify on pending review</string>
@@ -68,21 +72,36 @@
     <string name="approved_senders_phone_hint">Phone number</string>
     <string name="approved_senders_name_hint">Sender name (optional)</string>
     <string name="approved_senders_empty">No approved senders yet</string>
+    <string name="approved_senders_empty_desc">Add trusted senders to automatically save their messages</string>
+    <string name="approved_senders_delete_title">Delete Sender?</string>
+    <string name="approved_senders_delete_message">Are you sure you want to remove %1$s from the list?</string>
+    <string name="approved_senders_phone_placeholder">050-1234567 or Shufersal</string>
+    <string name="approved_senders_name_placeholder">Shufersal</string>
+    <string name="approved_senders_tip">Tip: You can add a phone number or saved name (like \"Shufersal\", \"Leumi\")</string>
     
     <!-- Onboarding -->
     <string name="onboarding_welcome_title">Welcome to Voucher Keeper</string>
     <string name="onboarding_welcome_message">Smart assistant for Cibus, Pluxee, and digital vouchers</string>
+    <string name="onboarding_how_it_works">How It Works</string>
     <string name="onboarding_auto_title">🤖 Auto-Detect</string>
     <string name="onboarding_auto_desc">Analyzes SMS and saves real vouchers. Filters out spam.</string>
     <string name="onboarding_manual_title">✋ Full Control</string>
     <string name="onboarding_manual_desc">Add vouchers manually or review uncertain messages.</string>
-    <string name="onboarding_approved_senders_title">Approved Senders</string>
+    <string name="onboarding_privacy_title">Your Privacy Matters</string>
+    <string name="onboarding_privacy_desc">We only process SMS text locally on your device. No data leaves your phone.</string>
+    <string name="onboarding_permissions_title">Permissions We Need</string>
+    <string name="onboarding_permissions_sms">📱 SMS - To read incoming vouchers</string>
+    <string name="onboarding_permissions_notif">🔔 Notifications - To alert you about new vouchers</string>
+    <string name="onboarding_permissions_missing">⚠️ Some permissions missing. Grant them for full functionality.</string>
+    <string name="onboarding_grant_permissions">Grant Permissions</string>
+    <string name="onboarding_approved_senders_title">Approved Senders (Optional)</string>
     <string name="onboarding_approved_senders_desc">Add phone numbers OR saved names (\"Shufersal\", \"Leumi\"). Auto-save messages from them.</string>
     <string name="onboarding_strict_mode_title">🔒 Strict Mode</string>
     <string name="onboarding_strict_mode_desc">Enable to save ONLY from approved senders. Disable to let our smart engine analyze all.</string>
+    <string name="onboarding_strict_mode_enable">Enable Strict Mode</string>
     <string name="onboarding_next">Next</string>
+    <string name="onboarding_skip">Skip</string>
     <string name="onboarding_done">Let\'s Go!</string>
-    <string name="onboarding_dont_show_again">Don\'t show this again</string>
     
     <!-- Permissions -->
     <string name="permission_sms_title">SMS Permission Required</string>
