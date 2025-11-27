@@ -239,10 +239,10 @@ fun VoucherKeeperApp(
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.tertiary,
-                        selectedTextColor = MaterialTheme.colorScheme.tertiary,
-                        indicatorColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        selectedIconColor = Color(0xFFF57C00), // Deep Orange - לא צעקני
+                        selectedTextColor = Color(0xFFF57C00),
+                        indicatorColor = Color(0xFFFFF3E0).copy(alpha = 0.3f), // Light orange bg
+                        unselectedIconColor = Color(0xFFFB8C00).copy(alpha = 0.4f), // Muted orange
                         unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 )
@@ -277,15 +277,15 @@ fun VoucherKeeperApp(
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.secondary,
-                        selectedTextColor = MaterialTheme.colorScheme.secondary,
-                        indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        selectedIconColor = Color(0xFF2E7D32), // Forest Green - עדין וטבעי
+                        selectedTextColor = Color(0xFF2E7D32),
+                        indicatorColor = Color(0xFFE8F5E9).copy(alpha = 0.3f), // Light green bg
+                        unselectedIconColor = Color(0xFF66BB6A).copy(alpha = 0.4f), // Muted green
                         unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 )
                 
-                // Approved Senders (Right) - Blue/Primary color
+                // Approved Senders (Right) - Blue color
                 NavigationBarItem(
                     icon = { 
                         Icon(
@@ -315,10 +315,10 @@ fun VoucherKeeperApp(
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        selectedIconColor = Color(0xFF1976D2), // Material Blue - נעים לעין
+                        selectedTextColor = Color(0xFF1976D2),
+                        indicatorColor = Color(0xFFE3F2FD).copy(alpha = 0.3f), // Light blue bg
+                        unselectedIconColor = Color(0xFF42A5F5).copy(alpha = 0.4f), // Muted blue
                         unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 )
