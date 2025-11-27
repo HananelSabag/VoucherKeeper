@@ -12,9 +12,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.zIndex
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -43,6 +45,8 @@ fun OnboardingScreen(
     var hasSmsPermission by remember { mutableStateOf(PermissionHandler.hasSmsPermission(context)) }
     var hasNotificationPermission by remember { mutableStateOf(PermissionHandler.hasNotificationPermission(context)) }
     var strictModeEnabled by remember { mutableStateOf(false) }
+    var showPermissionsWarning by remember { mutableStateOf(false) }
+    var showStrictModeWarning by remember { mutableStateOf(false) }
     
     // SMS permission launcher
     val smsPermissionLauncher = rememberLauncherForActivityResult(
@@ -107,7 +111,22 @@ fun OnboardingScreen(
                         .fillMaxWidth()
                 ) {
                     when (currentPage) {
-                        0 -> WelcomePage()
+                        0 -> WelcomePage(
+                            hasSmsPermission = hasSmsPermission,
+                            hasNotificationPermission = hasNotificationPermission,
+                            onRequestSms = {
+                                if (!hasSmsPermission) {
+                                    smsPermissionLauncher.launch(PermissionHandler.getSmsPermissions())
+                                }
+                            },
+                            onRequestNotifications = {
+                                PermissionHandler.getNotificationPermission()?.let { permission ->
+                                    if (!hasNotificationPermission) {
+                                        notificationPermissionLauncher.launch(permission)
+                                    }
+                                }
+                            }
+                        )
                         else -> PermissionsAndSendersPage(
                             hasSmsPermission = hasSmsPermission,
                             hasNotificationPermission = hasNotificationPermission,
@@ -172,13 +191,21 @@ fun OnboardingScreen(
                         Button(
                             onClick = {
                                 if (currentPage < 1) {
-                                    currentPage++
-                                } else {
-                                    // Save strict mode setting
-                                    if (strictModeEnabled) {
-                                        viewModel.setStrictMode(true)
+                                    // Check permissions before moving to next page
+                                    if (!hasSmsPermission || !hasNotificationPermission) {
+                                        showPermissionsWarning = true
+                                    } else {
+                                        currentPage++
                                     }
-                                    onComplete()
+                                } else {
+                                    // Final page - check strict mode
+                                    if (!strictModeEnabled) {
+                                        showStrictModeWarning = true
+                                    } else {
+                                        // Save strict mode and complete
+                                        viewModel.setStrictMode(true)
+                                        onComplete()
+                                    }
                                 }
                             },
                             modifier = Modifier.weight(1f)
@@ -195,10 +222,68 @@ fun OnboardingScreen(
             }
         }
     }
+    
+    // Permissions Warning Dialog
+    if (showPermissionsWarning) {
+        AlertDialog(
+            onDismissRequest = { showPermissionsWarning = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
+                )
+            },
+            title = { Text(stringResource(R.string.onboarding_permissions_warning_title)) },
+            text = { Text(stringResource(R.string.onboarding_permissions_warning_message)) },
+            confirmButton = {
+                TextButton(onClick = { showPermissionsWarning = false }) {
+                    Text(stringResource(R.string.onboarding_understood))
+                }
+            }
+        )
+    }
+    
+    // Strict Mode Warning Dialog
+    if (showStrictModeWarning) {
+        AlertDialog(
+            onDismissRequest = { showStrictModeWarning = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            },
+            title = { Text(stringResource(R.string.onboarding_strict_mode_warning_title)) },
+            text = { Text(stringResource(R.string.onboarding_strict_mode_warning_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showStrictModeWarning = false
+                        // Complete with strict mode OFF
+                        onComplete()
+                    }
+                ) {
+                    Text(stringResource(R.string.onboarding_understood))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showStrictModeWarning = false }) {
+                    Text(stringResource(R.string.onboarding_go_back))
+                }
+            }
+        )
+    }
 }
 
 @Composable
-private fun WelcomePage() {
+private fun WelcomePage(
+    hasSmsPermission: Boolean,
+    hasNotificationPermission: Boolean,
+    onRequestSms: () -> Unit,
+    onRequestNotifications: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
@@ -210,7 +295,7 @@ private fun WelcomePage() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             
             // Title
             Text(
@@ -226,31 +311,31 @@ private fun WelcomePage() {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             
             // How it works
             Text(
                 text = stringResource(R.string.onboarding_how_it_works),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.fillMaxWidth()
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             FeatureCard(
                 title = stringResource(R.string.onboarding_auto_title),
                 description = stringResource(R.string.onboarding_auto_desc)
             )
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             
             FeatureCard(
                 title = stringResource(R.string.onboarding_manual_title),
                 description = stringResource(R.string.onboarding_manual_desc)
             )
             
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             
             // Privacy
             Card(
@@ -258,27 +343,57 @@ private fun WelcomePage() {
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
                 ),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(20.dp)
+                    modifier = Modifier.padding(14.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.onboarding_privacy_title),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = stringResource(R.string.onboarding_privacy_desc),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
+            
+            Spacer(modifier = Modifier.height(20.dp))
+            
+            // Permissions Section
+            Text(
+                text = stringResource(R.string.onboarding_permissions_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // SMS Permission
+            PermissionItemWithButton(
+                text = stringResource(R.string.onboarding_permissions_sms),
+                granted = hasSmsPermission,
+                buttonText = stringResource(R.string.onboarding_grant_sms),
+                onGrantClick = onRequestSms
+            )
+            
+            Spacer(modifier = Modifier.height(10.dp))
+            
+            // Notification Permission
+            PermissionItemWithButton(
+                text = stringResource(R.string.onboarding_permissions_notif),
+                granted = hasNotificationPermission,
+                buttonText = stringResource(R.string.onboarding_grant_notifications),
+                onGrantClick = onRequestNotifications
+            )
         }
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         
         // Created by
         Text(
@@ -286,7 +401,7 @@ private fun WelcomePage() {
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 8.dp)
         )
     }
 }
@@ -300,6 +415,8 @@ private fun PermissionsAndSendersPage(
     strictModeEnabled: Boolean,
     onStrictModeChange: (Boolean) -> Unit
 ) {
+    var showAddSenderDialog by remember { mutableStateOf(false) }
+    
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -309,48 +426,24 @@ private fun PermissionsAndSendersPage(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         
-        // Permissions Section
-        Text(
-            text = stringResource(R.string.onboarding_permissions_title),
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center
-        )
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        // SMS Permission
-        PermissionItemWithButton(
-            text = stringResource(R.string.onboarding_permissions_sms),
-            granted = hasSmsPermission,
-            buttonText = stringResource(R.string.onboarding_grant_sms),
-            onGrantClick = onRequestSms
-        )
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        // Notification Permission
-        PermissionItemWithButton(
-            text = stringResource(R.string.onboarding_permissions_notif),
-            granted = hasNotificationPermission,
-            buttonText = stringResource(R.string.onboarding_grant_notifications),
-            onGrantClick = onRequestNotifications
-        )
-        
-        Spacer(modifier = Modifier.height(40.dp))
-        
-        HorizontalDivider()
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
         // Approved Senders Section
         Text(
             text = stringResource(R.string.onboarding_approved_senders_title),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.fillMaxWidth()
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.primary
         )
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        Text(
+            text = stringResource(R.string.onboarding_approved_senders_subtitle),
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
         
         Text(
             text = stringResource(R.string.onboarding_approved_senders_desc),
@@ -361,14 +454,34 @@ private fun PermissionsAndSendersPage(
         
         Spacer(modifier = Modifier.height(24.dp))
         
+        // Add Sender Button
+        OutlinedButton(
+            onClick = { showAddSenderDialog = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.onboarding_add_sender))
+        }
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        HorizontalDivider()
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
         // Strict Mode Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
                 containerColor = if (strictModeEnabled) 
-                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                    MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
                 else 
-                    MaterialTheme.colorScheme.surfaceVariant
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
             ),
             shape = RoundedCornerShape(16.dp)
         ) {
@@ -380,7 +493,7 @@ private fun PermissionsAndSendersPage(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = stringResource(R.string.onboarding_strict_mode_desc),
                     style = MaterialTheme.typography.bodyMedium,
@@ -403,8 +516,25 @@ private fun PermissionsAndSendersPage(
                         onCheckedChange = onStrictModeChange
                     )
                 }
+                
+                if (!strictModeEnabled) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "✓ " + stringResource(R.string.onboarding_strict_mode_recommendation),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                    )
+                }
             }
         }
+    }
+    
+    // Add Sender Dialog (simplified for onboarding)
+    if (showAddSenderDialog) {
+        AddSenderOnboardingDialog(
+            onDismiss = { showAddSenderDialog = false }
+        )
     }
 }
 
@@ -491,5 +621,34 @@ private fun PermissionItemWithButton(
             }
         }
     }
+}
+
+@Composable
+private fun AddSenderOnboardingDialog(
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.onboarding_add_sender)) },
+        text = {
+            Column {
+                Text(
+                    text = stringResource(R.string.onboarding_approved_senders_desc),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "You can add approved senders later from the Contacts tab at any time.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.onboarding_understood))
+            }
+        }
+    )
 }
 

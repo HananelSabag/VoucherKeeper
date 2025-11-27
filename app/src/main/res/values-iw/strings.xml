@@ -95,11 +95,21 @@
     <string name="onboarding_permissions_notif">🔔 התראות - להתראה על שוברים חדשים</string>
     <string name="onboarding_grant_sms">אפשר הרשאת SMS</string>
     <string name="onboarding_grant_notifications">אפשר התראות</string>
-    <string name="onboarding_approved_senders_title">שולחים מאושרים (אופציונלי)</string>
-    <string name="onboarding_approved_senders_desc">הוסף מספרי טלפון או שמות שמורים (\"שופרסל\", \"לאומי\"). שמירה אוטומטית מהם.</string>
+    <string name="onboarding_approved_senders_title">שולחים מאושרים</string>
+    <string name="onboarding_approved_senders_subtitle">שליטה על מי יכול לשלוח לך שוברים</string>
+    <string name="onboarding_approved_senders_desc">הוסף מספרי טלפון מהימנים או שמות אנשי קשר שמורים (כמו \"שופרסל\", \"לאומי\"). הודעות מהם יישמרו אוטומטית.</string>
+    <string name="onboarding_add_sender">הוסף שולח מאושר</string>
+    <string name="onboarding_skip_for_now">דלג לעכשיו</string>
     <string name="onboarding_strict_mode_title">🔒 מצב מוגבל</string>
-    <string name="onboarding_strict_mode_desc">הפעל כדי לשמור רק משולחים מאושרים. כבה כדי לאפשר למנוע החכם לנתח הכל.</string>
+    <string name="onboarding_strict_mode_desc">כשמופעל: רק שולחים מאושרים יישמרו.\nכשכבוי: המנגנון החכם שלנו מנתח את כל ההודעות ומסנן ספאם אוטומטית.</string>
     <string name="onboarding_strict_mode_enable">הפעל מצב מוגבל</string>
+    <string name="onboarding_strict_mode_recommendation">מומלץ: השאר כבוי כדי לאפשר ל-AI לעבוד בשבילך</string>
+    <string name="onboarding_permissions_warning_title">נדרשות הרשאות</string>
+    <string name="onboarding_permissions_warning_message">האפליקציה זקוקה להרשאות SMS והתראות כדי לעבוד כראוי. אנא אפשר אותן כדי להמשיך.</string>
+    <string name="onboarding_strict_mode_warning_title">מצב חכם פעיל</string>
+    <string name="onboarding_strict_mode_warning_message">מצב מוגבל כבוי. המנגנון החכם שלנו ינתח את כל הודעות ה-SMS וישמור אוטומטית שוברים אמיתיים ל-Pending לבדיקה.\n\nאתה יכול לסמוך על ה-AI שלנו - הוא מסנן ספאם ושומר רק שוברים לגיטימיים.</string>
+    <string name="onboarding_understood">הבנתי</string>
+    <string name="onboarding_go_back">חזור</string>
     <string name="onboarding_next">הבא</string>
     <string name="onboarding_done">בואו נתחיל!</string>
     

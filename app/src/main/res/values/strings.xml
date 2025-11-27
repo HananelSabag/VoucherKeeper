@@ -95,11 +95,21 @@
     <string name="onboarding_permissions_notif">🔔 Notifications - To alert you about new vouchers</string>
     <string name="onboarding_grant_sms">Grant SMS Permission</string>
     <string name="onboarding_grant_notifications">Grant Notifications</string>
-    <string name="onboarding_approved_senders_title">Approved Senders (Optional)</string>
-    <string name="onboarding_approved_senders_desc">Add phone numbers OR saved names (\"Shufersal\", \"Leumi\"). Auto-save messages from them.</string>
+    <string name="onboarding_approved_senders_title">Approved Senders</string>
+    <string name="onboarding_approved_senders_subtitle">Control Who Can Send You Vouchers</string>
+    <string name="onboarding_approved_senders_desc">Add trusted phone numbers OR saved contact names (like \"Shufersal\", \"Leumi\"). Messages from them will be saved automatically.</string>
+    <string name="onboarding_add_sender">Add Approved Sender</string>
+    <string name="onboarding_skip_for_now">Skip for now</string>
     <string name="onboarding_strict_mode_title">🔒 Strict Mode</string>
-    <string name="onboarding_strict_mode_desc">Enable to save ONLY from approved senders. Disable to let our smart engine analyze all.</string>
+    <string name="onboarding_strict_mode_desc">When enabled: ONLY approved senders will be saved.\nWhen disabled: Our smart engine analyzes ALL messages and filters spam automatically.</string>
     <string name="onboarding_strict_mode_enable">Enable Strict Mode</string>
+    <string name="onboarding_strict_mode_recommendation">Recommended: Keep OFF to let our AI work for you</string>
+    <string name="onboarding_permissions_warning_title">Permissions Required</string>
+    <string name="onboarding_permissions_warning_message">The app needs SMS and Notification permissions to work properly. Please grant them to continue.</string>
+    <string name="onboarding_strict_mode_warning_title">Smart Mode Active</string>
+    <string name="onboarding_strict_mode_warning_message">Strict Mode is OFF. Our smart engine will analyze all SMS messages and automatically save real vouchers to Pending review.\n\nYou can trust our AI - it filters spam and only saves legitimate vouchers.</string>
+    <string name="onboarding_understood">I Understand</string>
+    <string name="onboarding_go_back">Go Back</string>
     <string name="onboarding_next">Next</string>
     <string name="onboarding_done">Let\'s Go!</string>
     
