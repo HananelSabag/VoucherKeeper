@@ -55,6 +55,11 @@ class PreferencesManager @Inject constructor(
         dataStore.edit { preferences ->
             preferences[LANGUAGE_KEY] = language
         }
+        // Also save to SharedPreferences for early access in attachBaseContext()
+        context.getSharedPreferences("locale_prefs", Context.MODE_PRIVATE)
+            .edit()
+            .putString("language", language)
+            .apply()
     }
     
     // Notification preferences

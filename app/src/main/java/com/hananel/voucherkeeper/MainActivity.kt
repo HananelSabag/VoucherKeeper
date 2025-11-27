@@ -44,12 +44,7 @@ import com.hananel.voucherkeeper.ui.theme.VoucherKeeperTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.datastore.preferences.core.stringPreferencesKey
 import javax.inject.Inject
-
-private val Context.dataStore by preferencesDataStore(name = "app_preferences")
 
 /**
  * Main activity for Voucher Keeper.
@@ -64,17 +59,9 @@ class MainActivity : ComponentActivity() {
     lateinit var preferencesManager: PreferencesManager
     
     override fun attachBaseContext(newBase: Context) {
-        // Apply saved language preference from DataStore
-        val languageCode = runBlocking {
-            try {
-                // Read directly from DataStore file
-                val dataStore = androidx.datastore.preferences.preferencesDataStore(name = "app_preferences")
-                val prefs = newBase.dataStore.data.first()
-                prefs[androidx.datastore.preferences.core.stringPreferencesKey("language")] ?: "auto"
-            } catch (e: Exception) {
-                "auto"
-            }
-        }
+        // Apply saved language preference from SharedPreferences (used early in lifecycle)
+        val sharedPrefs = newBase.getSharedPreferences("locale_prefs", Context.MODE_PRIVATE)
+        val languageCode = sharedPrefs.getString("language", "auto") ?: "auto"
         val context = LocaleHelper.applyLanguage(newBase, languageCode)
         super.attachBaseContext(context)
     }
