@@ -141,24 +141,15 @@ fun VoucherCard(
                                         tint = MaterialTheme.colorScheme.secondary
                                     )
                                     Text(
-                                        text = stringResource(R.string.voucher_more_from_sender, otherVouchersCount),
+                                        text = if (totalAmount != null) {
+                                            stringResource(R.string.voucher_additional_info, otherVouchersCount, totalAmount)
+                                        } else {
+                                            stringResource(R.string.voucher_additional_info_no_amount, otherVouchersCount)
+                                        },
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.secondary,
-                                        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold
+                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
                                     )
-                                    if (totalAmount != null) {
-                                        Text(
-                                            text = "•",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
-                                        )
-                                        Text(
-                                            text = stringResource(R.string.voucher_total_amount, totalAmount),
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                                        )
-                                    }
                                 }
                             }
                         }
