@@ -138,7 +138,7 @@
 - **Core Engine Complete**: Parser Engine with exact decision tree implementation
 - **Project Skeleton Ready**: Fully functional foundation ready for testing and refinement
 
-### 2025-11-27
+### 2025-11-27 (Morning)
 - **UI Design Analysis Complete**: Comprehensive review of app design with focus on UX/UI
 - **Phase 5 Complete**: Full UI design refinement based on user feedback
   - ✅ Fixed light mode background color (removed pinkish tint)
@@ -149,6 +149,73 @@
   - ✅ Completed full Material 3 typography system
   - ✅ Improved color palette for better light/dark mode adaptation
   - ✅ All components now fully theme-responsive
+
+### 2025-11-27 (Evening) - CRITICAL BUG FIXES
+- **🔴 CRITICAL BUG DISCOVERED AND FIXED**:
+  - VoucherRepository was NOT saving approved vouchers (empty block in when statement)
+  - Added missing `insertVoucherFromDecision()` call for APPROVED case
+  
+- **🔍 Debug Logging System Implemented**:
+  - Added comprehensive logging to SmsReceiver (VoucherKeeper_SMS tag)
+  - Added detailed logging to VoucherRepository (VoucherKeeper_Repo tag)
+  - Added decision tree logging to ParserEngine (VoucherKeeper_Parser tag)
+  - All logs include decision flags, extracted data, and reasoning
+  
+- **✅ Verification Complete**:
+  - Permissions properly declared in AndroidManifest
+  - SMS Receiver properly registered with priority 999
+  - Notification drawable (app_logo.png) exists
+  - Error handling with try-catch blocks
+  - Database schema correct
+  - Word banks match spec exactly
+  
+- **📋 Documentation Created**:
+  - CRITICAL_FIXES_AND_TESTING.md with complete testing guide
+  - Test scenarios for all decision tree paths
+  - Debugging tips and logcat instructions
+  - Real-world SMS examples (Hebrew & English)
+
+### 2025-11-27 (Late Evening) - MAJOR UI OVERHAUL 🎨
+- **🎨 Voucher Card Redesign - Complete Transformation**:
+  - ✅ Replaced ALL emoji icons with Material Design icons
+  - ✅ Added beautiful circular avatar badges for sender info
+  - ✅ Implemented edit sender name functionality with dialog
+  - ✅ Enhanced card elevation and rounded corners (20dp)
+  - ✅ Added visual dividers and improved spacing
+  - ✅ Created clickable link sections with background and icons
+  - ✅ Improved icon sizes and visual hierarchy
+  - ✅ Material icons: Person, Phone, AccountBalanceWallet, Key, Link, OpenInNew, Schedule, Edit, Delete
+  
+- **🔧 Language Switching Fix**:
+  - ✅ Fixed dropdown state management issue
+  - ✅ Changed `onExpandedChange` from toggle to direct assignment
+  - ✅ Reordered onClick to close dropdown before triggering action
+  - ✅ Added 300ms delay with LaunchedEffect before activity recreation
+  - ✅ Added proper PaddingValues to dropdown menu items
+  
+- **📱 Status Bar Color Fix**:
+  - ✅ Added proper SideEffect for system bar colors
+  - ✅ Implemented WindowInsetsController for light/dark icons
+  - ✅ Status bar now matches background color in both themes
+  - ✅ Navigation bar color also synchronized
+  
+- **💎 Pending Voucher Card Enhancements**:
+  - ✅ Added HourglassEmpty icon in circular badge
+  - ✅ Implemented "Pending" status badge with Warning icon
+  - ✅ Enhanced action buttons with icons (Check, Close, PersonAdd)
+  - ✅ Improved visual hierarchy with dividers
+  - ✅ Consistent 20dp rounded corners
+  
+- **🗄️ Repository & ViewModel Updates**:
+  - ✅ Added `updateVoucherName()` method to VoucherRepository
+  - ✅ Added `updateVoucherName()` method to ApprovedVouchersViewModel
+  - ✅ Connected edit functionality through the entire stack
+  - ✅ Integrated in ApprovedVouchersScreen
+  
+- **🌐 Localization Updates**:
+  - ✅ Added new strings: voucher_edit_name, voucher_edit_name_dialog_title, voucher_edit_name_hint, voucher_no_name
+  - ✅ Full Hebrew translations for all new strings
+  - ✅ Maintains zero hardcoded text principle
 
 ---
 

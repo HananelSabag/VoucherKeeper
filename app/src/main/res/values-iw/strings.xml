@@ -26,6 +26,16 @@
     <string name="voucher_from">מאת: %1$s</string>
     <string name="voucher_date">התקבל: %1$s</string>
     <string name="voucher_view_details">הצג פרטים</string>
+    <string name="voucher_manual_entry">הוזן ידנית</string>
+    <string name="voucher_edit_name">ערוך שם</string>
+    <string name="voucher_edit_name_dialog_title">ערוך שם שולח</string>
+    <string name="voucher_edit_name_hint">שם תצוגה ידידותי</string>
+    <string name="voucher_no_name">שולח לא ידוע</string>
+    <string name="voucher_more_from_sender">עוד %1$d שוברים</string>
+    <string name="voucher_total_amount">סה״כ: %1$s</string>
+    <string name="voucher_summary_title">שוברים מ%1$s</string>
+    <string name="voucher_summary_count">%1$d שוברים</string>
+    <string name="voucher_summary_total">שווי כולל: %1$s</string>
     
     <!-- Actions -->
     <string name="action_approve">אשר</string>
@@ -34,6 +44,8 @@
     <string name="action_copy_code">העתק קוד</string>
     <string name="action_open_link">פתח קישור</string>
     <string name="action_add_sender">הוסף שולח לרשימת מאושרים</string>
+    <string name="action_add_voucher_manually">הוסף שובר</string>
+    <string name="action_add_approved_sender">הוסף שולח</string>
     
     <!-- Settings Screen -->
     <string name="settings_title">הגדרות</string>
@@ -69,15 +81,21 @@
     <!-- Approved Senders Management -->
     <string name="approved_senders_title">שולחים מאושרים</string>
     <string name="approved_senders_add">הוסף שולח</string>
-    <string name="approved_senders_phone_hint">מספר טלפון</string>
-    <string name="approved_senders_name_hint">שם שולח (אופציונלי)</string>
+    <string name="approved_senders_phone_hint">מספר / שם מהמערכת</string>
+    <string name="approved_senders_name_hint">שם תצוגה (אופציונלי)</string>
     <string name="approved_senders_empty">אין שולחים מאושרים עדיין</string>
     <string name="approved_senders_empty_desc">הוסף שולחים מהימנים כדי לשמור הודעות אוטומטית</string>
     <string name="approved_senders_delete_title">מחק שולח?</string>
     <string name="approved_senders_delete_message">האם אתה בטוח שברצונך להסיר את %1$s מהרשימה?</string>
-    <string name="approved_senders_phone_placeholder">050-1234567 או שופרסל</string>
-    <string name="approved_senders_name_placeholder">שופרסל</string>
+    <string name="approved_senders_phone_placeholder">+972501234567 או שופרסל</string>
+    <string name="approved_senders_name_placeholder">החנות האהובה שלי</string>
     <string name="approved_senders_tip">טיפ: אפשר להוסיף מספר או שם שמור (כמו \"שופרסל\", \"לאומי\")</string>
+    
+    <!-- Add Sender Dialog Explanations -->
+    <string name="approved_sender_explanation_title">📱 איך להוסיף שולח:</string>
+    <string name="approved_sender_explanation_text">• מספר טלפון: +972501234567\n• שם מהמערכת: \"Shufersal\", \"Terminal X\" (העתק מ-SMS!)\n\n📋 השדה הראשון = מה שמזהה את השולח\n🏷️ השדה השני = איך להציג באפליקציה (אופציונלי)\n\n⚠️ שמות מהמערכת חייבים זהים בדיוק!</string>
+    <string name="approved_sender_phone_hint">💡 העתק-הדבק מ-SMS app את השם בדיוק כמו שמוצג</string>
+    <string name="approved_sender_name_optional">שם נוח לתצוגה (לא משפיע על הזיהוי)</string>
     
     <!-- Onboarding -->
     <string name="onboarding_welcome_title">ברוכים הבאים ל-Voucher Keeper</string>
@@ -97,13 +115,13 @@
     <string name="onboarding_grant_notifications">אפשר התראות</string>
     <string name="onboarding_approved_senders_title">שולחים מאושרים</string>
     <string name="onboarding_approved_senders_subtitle">שליטה על מי יכול לשלוח לך שוברים</string>
-    <string name="onboarding_approved_senders_desc">הוסף מספרי טלפון מהימנים או שמות אנשי קשר שמורים (כמו \"שופרסל\", \"לאומי\"). הודעות מהם יישמרו אוטומטית.</string>
+    <string name="onboarding_approved_senders_desc">הוסף מספרי טלפון (+972...) או שמות שמורים במערכת (כמו \"Shufersal\", \"Terminal X\"). הודעות שוברים אמיתיות מהם יאושרו אוטומטית.</string>
     <string name="onboarding_add_sender">הוסף שולח מאושר</string>
     <string name="onboarding_skip_for_now">דלג לעכשיו</string>
     <string name="onboarding_strict_mode_title">🔒 מצב מוגבל</string>
-    <string name="onboarding_strict_mode_desc">כשמופעל: רק שולחים מאושרים יישמרו.\nכשכבוי: המנגנון החכם שלנו מנתח את כל ההודעות ומסנן ספאם אוטומטית.</string>
+    <string name="onboarding_strict_mode_desc">🔓 כבוי (מומלץ): האלגוריתם החכם סורק את כל ההודעות, מזהה שוברים אמיתיים ודוחה ספאם אוטומטית.\n\n🔒 מופעל: רק שולחים מאושרים ששמרת ידנית יישמרו. הודעות אחרות יידחו.</string>
     <string name="onboarding_strict_mode_enable">הפעל מצב מוגבל</string>
-    <string name="onboarding_strict_mode_recommendation">מומלץ: השאר כבוי כדי לאפשר לאלגוריתם החכם לעבוד בשבילך</string>
+    <string name="onboarding_strict_mode_recommendation">✓ מומלץ: השאר כבוי - האלגוריתם חזק מספיק!</string>
     <string name="onboarding_permissions_warning_title">נדרשות הרשאות</string>
     <string name="onboarding_permissions_warning_message">האפליקציה זקוקה להרשאות SMS והתראות כדי לעבוד כראוי. אנא אפשר אותן כדי להמשיך.</string>
     <string name="onboarding_strict_mode_warning_title">מצב חכם פעיל</string>
@@ -118,9 +136,17 @@
     <string name="permission_sms_message">Voucher Keeper צריך גישה ל-SMS כדי לזהות אוטומטית שוברים מהודעות נכנסות.</string>
     <string name="permission_notification_title">הרשאת התראות</string>
     <string name="permission_notification_message">אפשר התראות כדי להישאר מעודכן לגבי שוברים חדשים.</string>
+    <string name="permission_background_title">פעולה ברקע</string>
+    <string name="permission_background_message">בטל אופטימיזציית סוללה כדי לקבל SMS גם כשהאפליקציה סגורה</string>
     <string name="permission_grant">אשר הרשאה</string>
     <string name="permission_deny">לא עכשיו</string>
     <string name="permission_denied_message">חלק מהפיצ\'רים עשויים לא לעבוד ללא הרשאה זו.</string>
+    
+    <!-- Background Operation -->
+    <string name="onboarding_permissions_background">⚡ רקע - עבודה גם כשהאפליקציה סגורה</string>
+    <string name="onboarding_grant_background">אפשר פעולה ברקע</string>
+    <string name="background_optimization_disabled">פעולה ברקע פעילה</string>
+    <string name="background_optimization_enabled">לחץ לאפשר פעולה ברקע</string>
     
     <!-- Notifications -->
     <string name="notification_channel_vouchers">שוברים</string>
@@ -132,6 +158,7 @@
     
     <!-- Dialogs -->
     <string name="dialog_confirm">אישור</string>
+    <string name="dialog_add">הוסף</string>
     <string name="dialog_cancel">ביטול</string>
     <string name="dialog_delete_title">למחוק שובר?</string>
     <string name="dialog_delete_message">פעולה זו אינה ניתנת לביטול.</string>

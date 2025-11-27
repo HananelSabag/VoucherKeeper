@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,9 +29,10 @@ fun SettingsScreen(
     onNavigateToApprovedSenders: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     val theme by viewModel.theme.collectAsState()
     val language by viewModel.language.collectAsState()
+    var pendingLanguageChange by remember { mutableStateOf(false) }
     val notifyApproved by viewModel.notifyApproved.collectAsState()
     val notifyPending by viewModel.notifyPending.collectAsState()
     val strictMode by viewModel.strictMode.collectAsState()
@@ -105,10 +107,18 @@ fun SettingsScreen(
                 ),
                 onValueChange = { 
                     viewModel.setLanguage(it)
-                    // Recreate activity immediately to apply new language
-                    (context as? android.app.Activity)?.recreate()
+                    pendingLanguageChange = true
                 }
             )
+            
+            // Handle language change with proper timing
+            LaunchedEffect(pendingLanguageChange) {
+                if (pendingLanguageChange) {
+                    kotlinx.coroutines.delay(300) // Wait for dropdown animation
+                    (context as? android.app.Activity)?.recreate()
+                    pendingLanguageChange = false
+                }
+            }
             
             HorizontalDivider()
             
@@ -193,7 +203,7 @@ private fun SettingsDropdown(
     
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
+        onExpandedChange = { expanded = it }
     ) {
         OutlinedTextField(
             value = options[value] ?: value,
@@ -215,9 +225,10 @@ private fun SettingsDropdown(
                 DropdownMenuItem(
                     text = { Text(displayName) },
                     onClick = {
-                        onValueChange(key)
                         expanded = false
-                    }
+                        onValueChange(key)
+                    },
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
                 )
             }
         }

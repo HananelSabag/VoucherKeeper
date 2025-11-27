@@ -40,12 +40,13 @@ fun PendingReviewScreen(
                 title = { 
                     Text(
                         text = stringResource(R.string.pending_title),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 actions = {
                     IconButton(onClick = onShowHelp) {

@@ -26,6 +26,16 @@
     <string name="voucher_from">From: %1$s</string>
     <string name="voucher_date">Received: %1$s</string>
     <string name="voucher_view_details">View Details</string>
+    <string name="voucher_manual_entry">Manual Entry</string>
+    <string name="voucher_edit_name">Edit Name</string>
+    <string name="voucher_edit_name_dialog_title">Edit Sender Name</string>
+    <string name="voucher_edit_name_hint">Friendly display name</string>
+    <string name="voucher_no_name">Unknown Sender</string>
+    <string name="voucher_more_from_sender">%1$d more vouchers</string>
+    <string name="voucher_total_amount">Total: %1$s</string>
+    <string name="voucher_summary_title">Vouchers from %1$s</string>
+    <string name="voucher_summary_count">%1$d vouchers</string>
+    <string name="voucher_summary_total">Total value: %1$s</string>
     
     <!-- Actions -->
     <string name="action_approve">Approve</string>
@@ -34,6 +44,8 @@
     <string name="action_copy_code">Copy Code</string>
     <string name="action_open_link">Open Link</string>
     <string name="action_add_sender">Add Sender to Approved List</string>
+    <string name="action_add_voucher_manually">Add Voucher</string>
+    <string name="action_add_approved_sender">Add Sender</string>
     
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>
@@ -69,15 +81,21 @@
     <!-- Approved Senders Management -->
     <string name="approved_senders_title">Approved Senders</string>
     <string name="approved_senders_add">Add Sender</string>
-    <string name="approved_senders_phone_hint">Phone number</string>
-    <string name="approved_senders_name_hint">Sender name (optional)</string>
+    <string name="approved_senders_phone_hint">Number / System Name</string>
+    <string name="approved_senders_name_hint">Display Name (optional)</string>
     <string name="approved_senders_empty">No approved senders yet</string>
     <string name="approved_senders_empty_desc">Add trusted senders to automatically save their messages</string>
     <string name="approved_senders_delete_title">Delete Sender?</string>
     <string name="approved_senders_delete_message">Are you sure you want to remove %1$s from the list?</string>
-    <string name="approved_senders_phone_placeholder">050-1234567 or Shufersal</string>
-    <string name="approved_senders_name_placeholder">Shufersal</string>
+    <string name="approved_senders_phone_placeholder">+972501234567 or Shufersal</string>
+    <string name="approved_senders_name_placeholder">My favorite store</string>
     <string name="approved_senders_tip">Tip: You can add a phone number or saved name (like \"Shufersal\", \"Leumi\")</string>
+    
+    <!-- Add Sender Dialog Explanations -->
+    <string name="approved_sender_explanation_title">📱 How to add a sender:</string>
+    <string name="approved_sender_explanation_text">• Phone number: +972501234567\n• System name: \"Shufersal\", \"Terminal X\" (copy from SMS!)\n\n📋 First field = What identifies the sender\n🏷️ Second field = How to display in app (optional)\n\n⚠️ System names must match EXACTLY!</string>
+    <string name="approved_sender_phone_hint">💡 Copy-paste from SMS app exactly as shown</string>
+    <string name="approved_sender_name_optional">Display name (doesn\'t affect identification)</string>
     
     <!-- Onboarding -->
     <string name="onboarding_welcome_title">Welcome to Voucher Keeper</string>
@@ -97,13 +115,13 @@
     <string name="onboarding_grant_notifications">Grant Notifications</string>
     <string name="onboarding_approved_senders_title">Approved Senders</string>
     <string name="onboarding_approved_senders_subtitle">Control Who Can Send You Vouchers</string>
-    <string name="onboarding_approved_senders_desc">Add trusted phone numbers OR saved contact names (like \"Shufersal\", \"Leumi\"). Messages from them will be saved automatically.</string>
+    <string name="onboarding_approved_senders_desc">Add phone numbers (+972...) OR system-saved names (like \"Shufersal\", \"Terminal X\"). Real voucher messages from them will be auto-approved.</string>
     <string name="onboarding_add_sender">Add Approved Sender</string>
     <string name="onboarding_skip_for_now">Skip for now</string>
     <string name="onboarding_strict_mode_title">🔒 Strict Mode</string>
-    <string name="onboarding_strict_mode_desc">When enabled: ONLY approved senders will be saved.\nWhen disabled: Our smart algorithm analyzes ALL messages and filters spam automatically.</string>
+    <string name="onboarding_strict_mode_desc">🔓 OFF (Recommended): Smart algorithm scans all messages, identifies real vouchers and rejects spam automatically.\n\n🔒 ON: Only manually approved senders will be saved. Other messages will be rejected.</string>
     <string name="onboarding_strict_mode_enable">Enable Strict Mode</string>
-    <string name="onboarding_strict_mode_recommendation">Recommended: Keep OFF to let our smart algorithm work for you</string>
+    <string name="onboarding_strict_mode_recommendation">✓ Recommended: Keep OFF - the algorithm is strong enough!</string>
     <string name="onboarding_permissions_warning_title">Permissions Required</string>
     <string name="onboarding_permissions_warning_message">The app needs SMS and Notification permissions to work properly. Please grant them to continue.</string>
     <string name="onboarding_strict_mode_warning_title">Smart Mode Active</string>
@@ -118,9 +136,17 @@
     <string name="permission_sms_message">Voucher Keeper needs SMS access to automatically detect vouchers from incoming messages.</string>
     <string name="permission_notification_title">Notification Permission</string>
     <string name="permission_notification_message">Allow notifications to stay updated about new vouchers.</string>
+    <string name="permission_background_title">Background Operation</string>
+    <string name="permission_background_message">Disable battery optimization to receive SMS even when app is closed</string>
     <string name="permission_grant">Grant Permission</string>
     <string name="permission_deny">Not Now</string>
     <string name="permission_denied_message">Some features may not work without this permission.</string>
+    
+    <!-- Background Operation -->
+    <string name="onboarding_permissions_background">⚡ Background - Work even when app is closed</string>
+    <string name="onboarding_grant_background">Allow Background Operation</string>
+    <string name="background_optimization_disabled">Background operation enabled</string>
+    <string name="background_optimization_enabled">Tap to enable background operation</string>
     
     <!-- Notifications -->
     <string name="notification_channel_vouchers">Vouchers</string>
@@ -132,6 +158,7 @@
     
     <!-- Dialogs -->
     <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_add">Add</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_delete_title">Delete Voucher?</string>
     <string name="dialog_delete_message">This action cannot be undone.</string>

@@ -79,15 +79,19 @@ fun ApprovedVouchersScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = onAddVoucher,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.cd_add_button)
-                )
-            }
+                containerColor = MaterialTheme.colorScheme.primary,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(stringResource(R.string.action_add_voucher_manually))
+                }
+            )
         }
     ) { paddingValues ->
         if (vouchers.isEmpty()) {
@@ -97,6 +101,15 @@ fun ApprovedVouchersScreen(
                     .padding(paddingValues)
             )
         } else {
+            // Group vouchers by sender for summary stats
+            val vouchersBySender = vouchers.groupBy { voucher ->
+                // Group by normalized phone or sender name
+                val normalizedPhone = com.hananel.voucherkeeper.util.PhoneNumberHelper.normalize(
+                    voucher.senderPhone
+                )
+                voucher.senderName ?: normalizedPhone
+            }
+            
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -108,9 +121,29 @@ fun ApprovedVouchersScreen(
                     items = vouchers,
                     key = { it.id }
                 ) { voucher ->
+                    val senderKey = voucher.senderName 
+                        ?: com.hananel.voucherkeeper.util.PhoneNumberHelper.normalize(voucher.senderPhone)
+                    val senderVouchers = vouchersBySender[senderKey] ?: emptyList()
+                    val otherVouchersCount = (senderVouchers.size - 1).coerceAtLeast(0)
+                    
+                    // Calculate total amount for this sender
+                    val totalAmount = if (otherVouchersCount > 0) {
+                        val amounts = senderVouchers.mapNotNull { it.amount }
+                        if (amounts.isNotEmpty()) {
+                            // Sum all amounts (parse the currency strings)
+                            val total = amounts.sumOf { amountStr ->
+                                amountStr.replace("[^0-9.]".toRegex(), "").toDoubleOrNull() ?: 0.0
+                            }
+                            if (total > 0) "₪${String.format("%.2f", total)}" else null
+                        } else null
+                    } else null
+                    
                     VoucherCard(
                         voucher = voucher,
-                        onDelete = { viewModel.deleteVoucher(it) }
+                        onDelete = { viewModel.deleteVoucher(it) },
+                        onUpdateName = { id, name -> viewModel.updateVoucherName(id, name) },
+                        otherVouchersCount = otherVouchersCount,
+                        totalAmount = totalAmount
                     )
                 }
             }
