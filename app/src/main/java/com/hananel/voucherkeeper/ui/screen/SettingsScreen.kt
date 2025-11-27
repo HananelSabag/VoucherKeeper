@@ -214,7 +214,7 @@ private fun SettingsDropdown(
             shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp), // Rounded corners!
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                .menuAnchor()
         )
         
         ExposedDropdownMenu(
