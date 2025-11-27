@@ -20,6 +20,7 @@
     <string name="pending_badge_count">%1$d pending</string>
     
     <!-- Voucher Card -->
+    <string name="voucher_counter_label">Total Vouchers</string>
     <string name="voucher_amount">Amount: %1$s</string>
     <string name="voucher_code">Code: %1$s</string>
     <string name="voucher_url">Link</string>

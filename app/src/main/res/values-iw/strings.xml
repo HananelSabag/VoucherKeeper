@@ -20,6 +20,7 @@
     <string name="pending_badge_count">%1$d ממתינים</string>
     
     <!-- Voucher Card -->
+    <string name="voucher_counter_label">סה״כ שוברים</string>
     <string name="voucher_amount">סכום: %1$s</string>
     <string name="voucher_code">קוד: %1$s</string>
     <string name="voucher_url">קישור</string>
