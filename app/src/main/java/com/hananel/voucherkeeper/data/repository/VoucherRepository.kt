@@ -5,12 +5,14 @@ import com.hananel.voucherkeeper.data.local.dao.ApprovedSenderDao
 import com.hananel.voucherkeeper.data.local.dao.TrustedDomainDao
 import com.hananel.voucherkeeper.data.local.dao.VoucherDao
 import com.hananel.voucherkeeper.data.local.entity.VoucherEntity
+import com.hananel.voucherkeeper.data.preferences.PreferencesManager
 import com.hananel.voucherkeeper.domain.parser.ExtractedData
 import com.hananel.voucherkeeper.domain.parser.ParserEngine
 import com.hananel.voucherkeeper.domain.parser.SMSMessage
 import com.hananel.voucherkeeper.domain.parser.VoucherDecision
 import com.hananel.voucherkeeper.util.PhoneNumberHelper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,7 +25,8 @@ class VoucherRepository @Inject constructor(
     private val voucherDao: VoucherDao,
     private val approvedSenderDao: ApprovedSenderDao,
     private val trustedDomainDao: TrustedDomainDao,
-    private val parserEngine: ParserEngine
+    private val parserEngine: ParserEngine,
+    private val preferencesManager: PreferencesManager
 ) {
     
     companion object {
@@ -61,6 +64,10 @@ class VoucherRepository @Inject constructor(
         Log.d(TAG, "=== VOUCHER REPOSITORY - Processing SMS ===")
         Log.d(TAG, "Sender: ${smsMessage.senderPhone}")
         
+        // Check strict mode setting
+        val strictModeEnabled = preferencesManager.strictModeFlow.first()
+        Log.d(TAG, "Strict Mode: ${if (strictModeEnabled) "ENABLED" else "DISABLED"}")
+        
         // Normalize incoming phone number
         val normalizedIncomingPhone = PhoneNumberHelper.normalize(smsMessage.senderPhone)
         Log.d(TAG, "Normalized incoming phone: $normalizedIncomingPhone")
@@ -90,6 +97,12 @@ class VoucherRepository @Inject constructor(
         Log.d(TAG, "  - Name: ${smsMessage.senderName ?: "(none)"} → Approved: $isApprovedByName")
         Log.d(TAG, "  - Display name from approved sender: ${displayName ?: "(none)"}")
         Log.d(TAG, "  - Final: $isApprovedSender")
+        
+        // 🔒 STRICT MODE CHECK: If enabled and sender not approved → REJECT immediately!
+        if (strictModeEnabled && !isApprovedSender) {
+            Log.d(TAG, "🔒 STRICT MODE - Sender NOT approved → DISCARDING message")
+            return VoucherDecision.Discard
+        }
         
         // Get custom trusted domains
         val customDomains = trustedDomainDao.getAllDomainsList()
