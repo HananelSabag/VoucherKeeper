@@ -189,14 +189,20 @@
     <string name="add_voucher_parse_button">חלץ פרטים</string>
     <string name="add_voucher_parse_success">השדות מולאו אוטומטית! בדוק ושמור.</string>
     <string name="add_voucher_manual_section">או הזן ידנית:</string>
-    <string name="add_voucher_merchant">שם העסק</string>
-    <string name="add_voucher_merchant_required">שם העסק הוא שדה חובה</string>
-    <string name="add_voucher_amount_label">סכום (אופציונלי)</string>
-    <string name="add_voucher_url_label">קישור לשובר</string>
-    <string name="add_voucher_code_label">קוד מימוש</string>
-    <string name="add_voucher_access_point_required">קישור או קוד חובה</string>
-    <string name="add_voucher_sender_label">מספר טלפון של שולח (אופציונלי)</string>
+    <string name="add_voucher_merchant">כותרת השובר</string>
+    <string name="add_voucher_merchant_required">כותרת חובה (תוצג על הכרטיס)</string>
+    <string name="add_voucher_merchant_hint">למשל: שופרסל, טרמינל X, רולדין</string>
+    <string name="add_voucher_amount_label">💰 סכום (אופציונלי)</string>
+    <string name="add_voucher_amount_hint">יופיע "סכום לא נמצא" אם ריק</string>
+    <string name="add_voucher_url_label">🔗 קישור לשובר</string>
+    <string name="add_voucher_url_hint">הקישור לשימוש/צפייה בשובר</string>
+    <string name="add_voucher_code_label">🔑 קוד מימוש</string>
+    <string name="add_voucher_code_hint">הקוד למימוש השובר</string>
+    <string name="add_voucher_access_point_required">חובה קישור או קוד (לפחות אחד!)</string>
     <string name="add_voucher_save">שמור שובר</string>
+    <string name="voucher_amount_not_found">סכום לא נמצא</string>
+    <string name="voucher_additional_info">עוד %1$d מאותו שולח · סה״כ: %2$s</string>
+    <string name="voucher_additional_info_no_amount">עוד %1$d מאותו שולח · (סכומים חלקיים)</string>
     
     <!-- Content Descriptions (Accessibility) -->
     <string name="cd_voucher_card">כרטיס שובר</string>
