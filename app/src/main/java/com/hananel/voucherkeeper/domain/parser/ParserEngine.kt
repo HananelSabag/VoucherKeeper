@@ -180,8 +180,39 @@ class ParserEngine @Inject constructor() {
             Log.d(TAG, "  URL $index: $url")
         }
         
-        // Return the first URL (usually the main voucher URL)
-        return urls.firstOrNull()
+        // If only one URL, return it
+        if (urls.size == 1) {
+            return urls.first()
+        }
+        
+        // Multiple URLs - smart filtering to find the voucher URL (not terms/regulations)
+        val termsKeywords = listOf(
+            "תקנון", "תנאים", "terms", "conditions", "regulations", 
+            "policy", "תנאי", "שימוש", "rules", "legal"
+        )
+        
+        // Filter out URLs that are likely terms/regulations
+        val voucherUrls = urls.filter { url ->
+            val urlLower = url.lowercase()
+            val textBeforeUrl = text.substringBefore(url, "").takeLast(50).lowercase()
+            
+            // Check if URL or text before it contains terms keywords
+            val isTermsUrl = termsKeywords.any { keyword ->
+                urlLower.contains(keyword) || textBeforeUrl.contains(keyword)
+            }
+            
+            if (isTermsUrl) {
+                Log.d(TAG, "  ⚠️ Filtered out terms URL: $url")
+            }
+            
+            !isTermsUrl
+        }
+        
+        // Return the first non-terms URL, or if all filtered, return shortest URL
+        val selectedUrl = voucherUrls.firstOrNull() ?: urls.minByOrNull { it.length }
+        
+        Log.d(TAG, "  ✅ Selected voucher URL: $selectedUrl")
+        return selectedUrl
     }
     
     /**
