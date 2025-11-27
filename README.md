@@ -1,205 +1,386 @@
-# Voucher Keeper 🎫
+# 📱 Voucher Keeper
 
-**An intelligent Android app that automatically detects, classifies, and stores real monetary vouchers from SMS messages.**
+**An intelligent Android app that automatically detects, classifies, and organizes real monetary vouchers from SMS messages.**
 
----
-
-## 📱 Overview
-
-Voucher Keeper is designed for tech professionals who receive digital vouchers (Cibus, Pluxee, gift cards) and want a clean, organized way to track them without the noise of promotional messages.
-
-### Key Features
-
-- **Automatic Detection**: Monitors incoming SMS and identifies real vouchers
-- **Smart Classification**: Uses rule-based decision tree to separate vouchers from marketing content
-- **Manual Review**: Unknown senders go to a pending queue for user approval
-- **Bilingual Support**: Full Hebrew and English localization with RTL support
-- **Modern UI**: Material 3 design with Light/Dark themes
-- **Battery Optimized**: Uses only SMS broadcast receiver, no background services
+[![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](https://developer.android.com/)
+[![Language](https://img.shields.io/badge/Language-Kotlin-blue.svg)](https://kotlinlang.org/)
+[![Min SDK](https://img.shields.io/badge/Min%20SDK-33-orange.svg)](https://developer.android.com/about/versions/13)
+[![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-red.svg)](#license)
 
 ---
 
-## 🧠 Classification Engine
+## 🎯 Problem Statement
 
-The app uses a strict decision tree with three possible outcomes:
+In today's digital economy, Israeli tech workers and consumers receive dozens of SMS messages daily containing:
+- 💳 Real monetary vouchers (Cibus, Pluxee, gift cards)
+- 🎟️ Store credits and digital redemption codes
+- 📢 Marketing spam and promotional "deals"
+- 🔔 Discount coupons and sales notifications
 
-1. **APPROVED** - Real voucher from trusted sender
-2. **PENDING** - Looks like a voucher but unknown sender (manual review)
-3. **DISCARD** - Promotional/marketing content
+**The Challenge:** Valuable vouchers get buried in marketing noise, expire unused, or are accidentally deleted.
 
-### Decision Logic
+**Voucher Keeper** solves this by using an intelligent rule-based engine that automatically identifies and preserves ONLY real monetary assets while filtering out all promotional content.
 
-```
-FLAGS:
-- isApprovedSender (sender in approved list)
-- hasStrongVoucherWord (contains voucher terms)
-- hasAccessPoint (has URL with trusted domain OR redemption code)
-- hasCouponPromoWord (contains promo/marketing terms)
+---
 
-RULES:
-1. Pre-filter: IF hasCouponPromoWord AND NOT hasStrongVoucherWord → DISCARD
-2. Approved: IF isApprovedSender AND hasStrongVoucherWord AND hasAccessPoint → APPROVED
-3. Pending: IF NOT isApprovedSender AND hasStrongVoucherWord AND hasAccessPoint → PENDING
-4. Default: → DISCARD
-```
+## ✨ Key Features
+
+### 🤖 **Intelligent SMS Processing**
+- **Real-time SMS monitoring** with zero battery impact
+- **Advanced parser engine** with dual-language support (Hebrew/English)
+- **Smart URL filtering** - distinguishes voucher links from T&C links
+- **Automatic classification** into Approved, Pending, or Discard categories
+
+### 🎨 **Modern Material 3 UI**
+- **Jetpack Compose** with clean, intuitive design
+- **Dynamic color theming** (light/dark modes)
+- **Fully bilingual** (Hebrew RTL + English LTR)
+- **Smooth animations** and gesture-based interactions
+
+### ✏️ **Complete User Control**
+- **Full voucher editing** - Fix any parser errors on approved vouchers
+- **Pre-approval editing** - Correct mistakes before saving pending vouchers
+- **Approved sender management** - Whitelist trusted contacts
+- **Manual voucher entry** with smart paste & auto-extract
+
+### 📊 **Smart Organization**
+- **Approved vouchers list** with grouping by sender
+- **Pending review queue** for manual verification
+- **Voucher counter** showing total saved value
+- **Additional voucher aggregation** per sender with total amounts
+
+### 🔔 **Intelligent Notifications**
+- Configurable alerts for new approved vouchers
+- Pending review notifications
+- Respects user preferences and quiet hours
 
 ---
 
 ## 🏗️ Architecture
 
-**Pattern**: MVVM (Model-View-ViewModel)  
-**UI**: Jetpack Compose  
-**DI**: Hilt (Dagger)  
-**Database**: Room  
-**Async**: Kotlin Coroutines + Flow
-
-### Project Structure
+**Clean Architecture** with MVVM pattern:
 
 ```
-com.hananel.voucherkeeper/
-├── data/
-│   ├── local/
-│   │   ├── entity/           # Room entities
-│   │   ├── dao/              # Data Access Objects
-│   │   └── VoucherDatabase   # Room database
-│   ├── repository/           # Repository layer
-│   └── preferences/          # DataStore preferences
-├── domain/
-│   └── parser/               # Parser Engine (business logic)
-│       ├── WordBanks         # Term definitions
-│       ├── Models            # Data classes
-│       └── ParserEngine      # Classification logic
-├── ui/
-│   ├── screen/               # Compose screens
-│   ├── components/           # Reusable UI components
-│   ├── viewmodel/            # ViewModels
-│   ├── navigation/           # Navigation setup
-│   └── theme/                # Material 3 theme
-├── receiver/                 # SMS Broadcast Receiver
-├── util/                     # Utilities (permissions, notifications)
-└── di/                       # Hilt dependency injection
+┌─────────────────────────────────────────┐
+│           UI Layer (Compose)            │
+│  ├─ Screens (Approved, Pending, etc.)  │
+│  ├─ Components (Cards, Dialogs)        │
+│  └─ Theme (Material 3 Dynamic)         │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│         ViewModel Layer                 │
+│  ├─ ApprovedVouchersViewModel          │
+│  ├─ PendingReviewViewModel             │
+│  └─ SettingsViewModel                  │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│        Domain Layer                     │
+│  ├─ ParserEngine (Decision Tree)       │
+│  ├─ PhoneNumberHelper                  │
+│  └─ Business Logic                     │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│          Data Layer                     │
+│  ├─ Repository Pattern                 │
+│  ├─ Room Database (Local)              │
+│  ├─ DataStore (Preferences)            │
+│  └─ SMS BroadcastReceiver              │
+└─────────────────────────────────────────┘
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🧠 The Parser Engine
 
-| Component | Technology |
-|-----------|------------|
-| Language | Kotlin |
-| Min SDK | 33 (Android 13) |
-| UI Framework | Jetpack Compose |
-| Architecture | MVVM |
-| DI | Hilt |
-| Database | Room |
-| Async | Coroutines + Flow |
-| Preferences | DataStore |
-| Theme | Material 3 |
+### Decision Tree Logic
+
+```
+┌─────────────────┐
+│  Incoming SMS   │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────────────────┐
+│  Extract: URL, Code,        │
+│  Amount, Sender, Keywords   │
+└────────┬────────────────────┘
+         │
+         ▼
+   ┌─────────────┐      NO
+   │ Marketing?  ├──────────┐
+   └──────┬──────┘          │
+         │ YES              │
+         ▼                  │
+   ┌─────────┐              │
+   │ DISCARD │              │
+   └─────────┘              │
+                            │
+         ┌──────────────────┘
+         │
+         ▼
+┌────────────────────────┐
+│ Has Voucher Markers?   │
+│ (URL/Code + Keywords)  │
+└────────┬───────────────┘
+         │
+    ┌────┴─────┐
+    │          │
+   YES        NO
+    │          │
+    │          ▼
+    │    ┌─────────┐
+    │    │ DISCARD │
+    │    └─────────┘
+    │
+    ▼
+┌──────────────────┐
+│ Approved Sender? │
+└────┬──────┬──────┘
+     │      │
+    YES    NO
+     │      │
+     ▼      ▼
+┌─────────┐ ┌─────────┐
+│APPROVED │ │ PENDING │
+└─────────┘ └─────────┘
+```
+
+### Intelligent URL Filtering
+
+The parser distinguishes between:
+- ✅ **Voucher URLs**: Direct redemption links
+- ❌ **Terms URLs**: Regulations, T&C, privacy policies
+
+**Supports both languages:**
+```kotlin
+termsKeywords = [
+  "תקנון", "תנאים", "פרטיות",        // Hebrew
+  "terms", "conditions", "privacy"    // English
+]
+```
+
+**URL decoding** handles Hebrew characters in URLs properly.
 
 ---
 
-## 📦 Setup & Build
+## 🛠️ Technology Stack
+
+| Category | Technologies |
+|----------|-------------|
+| **Language** | Kotlin 100% |
+| **UI Framework** | Jetpack Compose (Material 3) |
+| **Architecture** | MVVM + Clean Architecture |
+| **Dependency Injection** | Hilt (Dagger) |
+| **Database** | Room (SQLite) |
+| **Async** | Kotlin Coroutines + Flow |
+| **Preferences** | DataStore (Preferences) |
+| **Localization** | Android Resources (strings.xml) |
+| **Theme** | Material 3 Dynamic Colors |
+| **Notifications** | NotificationCompat |
+| **Build System** | Gradle (Kotlin DSL) |
+
+---
+
+## 📸 Features in Detail
+
+### 🎯 **Smart Paste & Auto-Extract**
+Paste an entire SMS message, and the parser automatically extracts:
+- Merchant name
+- Amount
+- Voucher URL
+- Redemption code
+- Sender phone
+
+### ✏️ **Full Editing Capabilities**
+
+**Approved Vouchers:**
+- Edit all fields: title, amount, URL, code, display name
+- Fix parser mistakes anytime
+- Scrollable dialog for long content
+
+**Pending Vouchers:**
+- Edit BEFORE approving
+- Fix errors immediately
+- Warning banner for user awareness
+
+### 👥 **Approved Sender Management**
+- Add trusted contacts (phone or system name)
+- Edit existing senders
+- Automatic phone number normalization
+- Smart handling of international prefixes
+
+### 🎨 **Consistent UI/UX**
+- **Icon-based navigation** - each screen has its identity
+- **Smooth transitions** - no "jumping" headers
+- **Color-coded tabs**:
+  - 🟢 Approved (Green/Secondary)
+  - 🟠 Pending (Orange/Tertiary)
+  - 🔵 Contacts (Blue/Primary)
+
+### 📊 **Smart Aggregation**
+Shows additional vouchers from the same sender:
+- "3 more from this sender · Total: ₪400"
+- "3 more from this sender · (amounts incomplete)"
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Android Studio Hedgehog or newer
-- Kotlin 1.9+
-- Min SDK 33 (Android 13)
+- **Android Studio** Hedgehog (2023.1.1) or later
+- **JDK** 17 or higher
+- **Android SDK** 33+ (Android 13)
+- **Gradle** 8.2+
 
-### Build Instructions
+### Installation
 
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/voucher-keeper.git
-cd voucher-keeper
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/HananelSabag/VoucherKeeper.git
+   cd VoucherKeeper
+   ```
 
-2. Open in Android Studio
-3. Sync Gradle
-4. Run on device or emulator (Android 13+)
+2. **Open in Android Studio**
+   - File → Open → Select project folder
+   - Wait for Gradle sync
 
----
+3. **Build and run**
+   ```bash
+   ./gradlew assembleDebug
+   # or click "Run" in Android Studio
+   ```
 
-## 🎨 Screens
+### Required Permissions
 
-1. **Approved Vouchers** - Main screen with all confirmed vouchers
-2. **Pending Review** - Messages awaiting manual approval/rejection
-3. **Settings** - Theme, language, notifications, approved senders
+The app requests these permissions at runtime:
+- `RECEIVE_SMS` - Monitor incoming SMS messages
+- `READ_SMS` - Access message content
+- `POST_NOTIFICATIONS` - Show voucher notifications (Android 13+)
 
----
-
-## 🔐 Permissions
-
-- **RECEIVE_SMS** - Listen to incoming SMS messages
-- **READ_SMS** - Read message content for parsing
-- **POST_NOTIFICATIONS** - Notify user of new vouchers (Android 13+)
-- **READ_CONTACTS** (optional) - Display contact names instead of phone numbers
-
-All permissions are requested through modern permission flows with rationale dialogs.
+**Privacy Note:** All processing is done locally. No data is sent to external servers.
 
 ---
 
-## 🌍 Localization
+## 🎓 Code Quality & Best Practices
 
-Fully localized in:
-- **English** (default)
-- **Hebrew** (עברית) with full RTL support
+### ✅ **Clean Architecture**
+- Separation of concerns (UI/Domain/Data)
+- Repository pattern for data access
+- Dependency injection with Hilt
 
-All strings are externalized - **zero hardcoded text** in code.
+### ✅ **Modern Android Development**
+- Jetpack Compose (no XML layouts)
+- Kotlin Coroutines for async operations
+- Flow for reactive data streams
+- StateFlow for UI state management
 
----
+### ✅ **Code Documentation**
+- Comprehensive KDoc comments
+- Inline explanations for complex logic
+- Clear function naming conventions
 
-## 🎯 Word Banks
+### ✅ **Error Handling**
+- Graceful failure recovery
+- User-friendly error messages
+- Validation at all input points
 
-### Strong Voucher Terms
-Hebrew: שובר, תו קנייה, כרטיס מתנה, קוד למימוש, etc.  
-English: voucher, gift card, store credit, redeem code, etc.
+### ✅ **Localization**
+- Full Hebrew (RTL) and English (LTR) support
+- All strings in `strings.xml`
+- Dynamic language switching
 
-### Promo/Coupon Terms (Filtered Out)
-Hebrew: קופון, הנחה, מבצע, סייל, דיל, etc.  
-English: coupon, discount, sale, deal, promo code, etc.
-
-### Trusted Domains
-- `pluxee.co.il` (Cibus, MultiPass)
-- `edenred.co.il`
-- `shufersal.co.il`
-
----
-
-## 👤 Author
-
-**Hananel Sabag**  
-Portfolio project showcasing modern Android development practices.
-
----
-
-## 📄 License
-
-This project is open-source. See LICENSE file for details.
+### ✅ **Testing Ready**
+- Testable architecture (MVVM)
+- Repository abstraction for mocking
+- Clear separation for unit testing
 
 ---
 
-## 🚀 Future Enhancements
+## 🔮 Future Enhancements
 
-- Export vouchers as PDF
-- Expiration date extraction and alerts
-- Google Drive backup
-- ML-based classification (deep learning)
-- Merchant logo detection
-- Biometric app lock
+- [ ] Export vouchers as PDF
+- [ ] Cloud backup (Google Drive integration)
+- [ ] Biometric app lock
+- [ ] Voucher expiration reminders
+- [ ] Merchant logo recognition
+- [ ] OCR for voucher images
+- [ ] Widget for home screen
+
+---
+
+## 📝 Development Story
+
+This project was born from a real-world problem experienced by tech workers in Israel who receive dozens of Cibus/Pluxee vouchers and gift cards but struggle to keep track of them.
+
+**Development Timeline:**
+- **Day 1:** Core architecture, SMS receiver, parser engine, basic UI
+- **Day 2:** Advanced features, full editing, UI polish, comprehensive testing
+
+**Built with collaboration between:**
+- Product vision & requirements definition
+- Real-time iterative development
+- Continuous user feedback integration
+- Professional code review standards
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+This is a personal project developed for portfolio demonstration. 
+
+**If you'd like to:**
+- Report bugs → Open an issue
+- Suggest features → Start a discussion
+- Fork for learning → Attribution required
 
 ---
 
-## 📞 Support
+## 📄 License
 
-For issues or questions, please open a GitHub issue.
+**Copyright © 2024 Hananel Sabag. All Rights Reserved.**
+
+This software and associated documentation files (the "Software") are proprietary and confidential.
+
+**Restrictions:**
+- ❌ No unauthorized copying, distribution, or modification
+- ❌ No commercial use without explicit permission
+- ❌ No redistribution in source or binary forms
+
+**Permitted:**
+- ✅ Viewing source code for educational purposes
+- ✅ Referencing in portfolio or resume
+- ✅ Citing in academic or professional contexts
+
+For licensing inquiries or permission requests, please contact the author.
 
 ---
+
+## 👨‍💻 Author
+
+**Hananel Sabag**
+
+🔗 [GitHub](https://github.com/HananelSabag) | 💼 [LinkedIn](#) | 📧 [Email](#)
+
+*Passionate Android developer with expertise in modern Kotlin development, clean architecture, and intuitive UI/UX design. Experienced in building production-ready applications with focus on code quality, performance, and user experience.*
+
+---
+
+## 🙏 Acknowledgments
+
+- Material Design 3 guidelines by Google
+- Android Jetpack libraries
+- Kotlin language features
+- The Android developer community
+
+---
+
+<div align="center">
 
 **Built with ❤️ using Kotlin & Jetpack Compose**
 
+⭐ Star this repository if you find it helpful!
+
+</div>
