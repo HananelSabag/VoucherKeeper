@@ -1,9 +1,12 @@
 package com.hananel.voucherkeeper
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
+import com.hananel.voucherkeeper.util.LocaleHelper
+import kotlinx.coroutines.runBlocking
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -41,7 +44,12 @@ import com.hananel.voucherkeeper.ui.theme.VoucherKeeperTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.core.stringPreferencesKey
 import javax.inject.Inject
+
+private val Context.dataStore by preferencesDataStore(name = "app_preferences")
 
 /**
  * Main activity for Voucher Keeper.
@@ -54,6 +62,22 @@ class MainActivity : ComponentActivity() {
     
     @Inject
     lateinit var preferencesManager: PreferencesManager
+    
+    override fun attachBaseContext(newBase: Context) {
+        // Apply saved language preference from DataStore
+        val languageCode = runBlocking {
+            try {
+                // Read directly from DataStore file
+                val dataStore = androidx.datastore.preferences.preferencesDataStore(name = "app_preferences")
+                val prefs = newBase.dataStore.data.first()
+                prefs[androidx.datastore.preferences.core.stringPreferencesKey("language")] ?: "auto"
+            } catch (e: Exception) {
+                "auto"
+            }
+        }
+        val context = LocaleHelper.applyLanguage(newBase, languageCode)
+        super.attachBaseContext(context)
+    }
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
