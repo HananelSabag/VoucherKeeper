@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hananel.voucherkeeper.R
 import com.hananel.voucherkeeper.data.local.entity.ApprovedSenderEntity
@@ -283,7 +285,8 @@ private fun AddSenderDialog(
         title = { 
             Text(
                 text = stringResource(R.string.approved_senders_add),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
             ) 
         },
         text = {
@@ -291,55 +294,44 @@ private fun AddSenderDialog(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Explanation card
-                Surface(
-                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.approved_sender_explanation_title),
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = stringResource(R.string.approved_sender_explanation_text),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+                // Compact hint - just one line
+                Text(
+                    text = "💡 " + stringResource(R.string.approved_sender_explanation_text),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp)
+                )
                 
-                // Section 1: Phone Number
+                // Phone OR System Name - clearer layout
                 Text(
                     text = "📱 " + stringResource(R.string.sender_type_phone),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    color = if (systemName.isNotBlank()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) 
+                            else MaterialTheme.colorScheme.onSurface
                 )
                 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Prefix dropdown
                     ExposedDropdownMenuBox(
                         expanded = expandedPrefixMenu,
-                        onExpandedChange = { expandedPrefixMenu = it },
-                        modifier = Modifier.width(120.dp)
+                        onExpandedChange = { 
+                            if (systemName.isBlank()) expandedPrefixMenu = it 
+                        },
+                        modifier = Modifier.width(110.dp)
                     ) {
                         OutlinedTextField(
                             value = phonePrefix,
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Prefix") },
+                            enabled = systemName.isBlank(),
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPrefixMenu) },
-                            modifier = Modifier.menuAnchor()
+                            modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = systemName.isBlank()),
+                            singleLine = true
                         )
                         ExposedDropdownMenu(
                             expanded = expandedPrefixMenu,
@@ -357,65 +349,42 @@ private fun AddSenderDialog(
                         }
                     }
                     
-                    // Phone number input with smart 0 removal
                     OutlinedTextField(
                         value = phoneNumber,
                         onValueChange = { input ->
-                            val cleaned = input.filter { it.isDigit() }
-                            
-                            // Smart 0 removal logic:
-                            // Israeli cellular: 050, 052, 053, 054, 055, 057, 058 (11 digits with 0)
-                            // Israeli landline: 02, 03, 04, 07, 08, 09 (10 digits, keep 0)
-                            // 077 is landline too!
-                            
-                            phoneNumber = if (cleaned.length == 11 && cleaned.startsWith("0")) {
-                                // Check if it's cellular (05X where X is digit)
-                                val isCellular = cleaned.startsWith("05") && 
-                                    cleaned.length > 2 && 
-                                    cleaned[2].isDigit() &&
-                                    cleaned[2] in listOf('0', '2', '3', '4', '5', '7', '8')
-                                
-                                if (isCellular) {
-                                    cleaned.drop(1) // Remove the leading 0
-                                } else {
-                                    cleaned // Keep 0 (landline like 077, 02, etc.)
-                                }
-                            } else {
-                                cleaned
-                            }
+                            phoneNumber = input.filter { it.isDigit() }
                             showError = false
                         },
-                        label = { Text(stringResource(R.string.phone_number_label)) },
-                        placeholder = { Text("50-743-2177 or 2-345-6789") },
-                        supportingText = { 
-                            Text(
-                                text = when {
-                                    phoneNumber.filter { it.isDigit() }.length == 11 && 
-                                    phoneNumber.startsWith("05") -> "⚠️ Cellular - 0 will be removed"
-                                    phoneNumber.startsWith("0") -> "✓ Landline - 0 kept"
-                                    else -> "Format: 50-XXX-XXXX (cellular) or 02-XXX-XXXX (landline)"
-                                },
-                                style = MaterialTheme.typography.bodySmall,
-                                color = when {
-                                    phoneNumber.startsWith("05") -> MaterialTheme.colorScheme.tertiary
-                                    else -> MaterialTheme.colorScheme.onSurfaceVariant
-                                }
-                            )
-                        },
+                        placeholder = { Text("542199006") },
+                        enabled = systemName.isBlank(),
                         isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
                         singleLine = true,
                         modifier = Modifier.weight(1f)
                     )
                 }
                 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                // OR divider
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "OR",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    )
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                }
                 
-                // Section 2: System Name (alternative to phone)
+                // System Name
                 Text(
                     text = "🏢 " + stringResource(R.string.sender_type_system),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    color = if (phoneNumber.isNotBlank()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) 
+                            else MaterialTheme.colorScheme.onSurface
                 )
                 
                 OutlinedTextField(
@@ -424,65 +393,56 @@ private fun AddSenderDialog(
                         systemName = it
                         showError = false
                     },
-                    label = { Text(stringResource(R.string.system_name_label)) },
-                    placeholder = { Text("Cibus, Shufersal, Terminal-X") },
-                    supportingText = {
-                        Text(
-                            text = stringResource(R.string.system_name_hint),
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    },
+                    placeholder = { Text("Cibus, Shufersal") },
+                    enabled = phoneNumber.isBlank(),
                     isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider()
                 
-                // Section 3: Display Name (optional)
+                // Display Name (optional)
                 Text(
-                    text = "👤 " + stringResource(R.string.sender_display_name),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    text = "👤 " + stringResource(R.string.sender_display_name) + " (Optional)",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 
                 OutlinedTextField(
                     value = displayName,
                     onValueChange = { displayName = it },
-                    label = { Text(stringResource(R.string.display_name_label)) },
                     placeholder = { Text(stringResource(R.string.display_name_placeholder)) },
-                    supportingText = {
-                        Text(
-                            text = stringResource(R.string.display_name_hint),
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
+                
+                if (showError) {
+                    Text(
+                        text = "⚠️ Enter phone number OR system name",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    // Validate: MUST have either phone OR system name
                     val hasPhone = phoneNumber.isNotBlank()
                     val hasSystemName = systemName.isNotBlank()
                     
                     if (!hasPhone && !hasSystemName) {
                         showError = true
                     } else {
-                        // Build identifier: phone with prefix OR system name
                         val identifier = if (hasPhone) {
-                            "$phonePrefix${phoneNumber.replace("-", "")}"
+                            "$phonePrefix$phoneNumber"
                         } else {
                             systemName.trim()
                         }
                         
-                        // Display name is optional
                         val finalDisplayName = displayName.trim().takeIf { it.isNotBlank() }
-                        
                         onAdd(identifier, finalDisplayName)
                     }
                 }
@@ -494,7 +454,11 @@ private fun AddSenderDialog(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.dialog_cancel))
             }
-        }
+        },
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .padding(horizontal = 16.dp)
     )
 }
 
@@ -544,41 +508,43 @@ private fun EditSenderDialog(
         title = { 
             Text(
                 text = stringResource(R.string.approved_senders_edit_title),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
             ) 
         },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
+                modifier = Modifier.fillMaxWidth()
             ) {
-                // Section 1: Phone Number
+                // Phone OR System Name - clearer layout
                 Text(
                     text = "📱 " + stringResource(R.string.sender_type_phone),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    color = if (systemName.isNotBlank()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) 
+                            else MaterialTheme.colorScheme.onSurface
                 )
                 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Prefix dropdown
                     ExposedDropdownMenuBox(
                         expanded = expandedPrefixMenu,
-                        onExpandedChange = { expandedPrefixMenu = it },
-                        modifier = Modifier.width(120.dp)
+                        onExpandedChange = { 
+                            if (systemName.isBlank()) expandedPrefixMenu = it 
+                        },
+                        modifier = Modifier.width(110.dp)
                     ) {
                         OutlinedTextField(
                             value = phonePrefix,
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Prefix") },
+                            enabled = systemName.isBlank(),
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPrefixMenu) },
-                            modifier = Modifier.menuAnchor()
+                            modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = systemName.isBlank()),
+                            singleLine = true
                         )
                         ExposedDropdownMenu(
                             expanded = expandedPrefixMenu,
@@ -596,64 +562,42 @@ private fun EditSenderDialog(
                         }
                     }
                     
-                    // Phone number input with smart 0 removal
                     OutlinedTextField(
                         value = phoneNumber,
                         onValueChange = { input ->
-                            val cleaned = input.filter { it.isDigit() }
-                            
-                            // Smart 0 removal for Israeli numbers:
-                            // Cellular: 050/052/053/054/055/057/058 (11 digits, remove 0)
-                            // Landline: 02/03/04/07/08/09/077 (10 digits, KEEP 0)
-                            
-                            phoneNumber = if (cleaned.length == 11 && cleaned.startsWith("0")) {
-                                // Check if cellular prefix
-                                val isCellular = cleaned.startsWith("05") && 
-                                    cleaned.length > 2 && 
-                                    cleaned[2].isDigit() &&
-                                    cleaned[2] in listOf('0', '2', '3', '4', '5', '7', '8')
-                                
-                                if (isCellular) {
-                                    cleaned.drop(1) // Remove redundant 0
-                                } else {
-                                    cleaned // Keep 0 (it's part of landline)
-                                }
-                            } else {
-                                cleaned
-                            }
+                            phoneNumber = input.filter { it.isDigit() }
                             showError = false
                         },
-                        label = { Text(stringResource(R.string.phone_number_label)) },
-                        placeholder = { Text("50-743-2177 or 2-345-6789") },
-                        supportingText = { 
-                            Text(
-                                text = when {
-                                    phoneNumber.filter { it.isDigit() }.length == 11 && 
-                                    phoneNumber.startsWith("05") -> "⚠️ Cellular - 0 will be removed"
-                                    phoneNumber.startsWith("0") -> "✓ Landline - 0 kept"
-                                    else -> "Format: 50-XXX-XXXX (cellular) or 02-XXX-XXXX (landline)"
-                                },
-                                style = MaterialTheme.typography.bodySmall,
-                                color = when {
-                                    phoneNumber.startsWith("05") -> MaterialTheme.colorScheme.tertiary
-                                    else -> MaterialTheme.colorScheme.onSurfaceVariant
-                                }
-                            )
-                        },
+                        placeholder = { Text("542199006") },
+                        enabled = systemName.isBlank(),
                         isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
                         singleLine = true,
                         modifier = Modifier.weight(1f)
                     )
                 }
                 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                // OR divider
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "OR",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    )
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                }
                 
-                // Section 2: System Name
+                // System Name
                 Text(
                     text = "🏢 " + stringResource(R.string.sender_type_system),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    color = if (phoneNumber.isNotBlank()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) 
+                            else MaterialTheme.colorScheme.onSurface
                 )
                 
                 OutlinedTextField(
@@ -662,43 +606,38 @@ private fun EditSenderDialog(
                         systemName = it
                         showError = false
                     },
-                    label = { Text(stringResource(R.string.system_name_label)) },
-                    placeholder = { Text("Cibus, Shufersal, Terminal-X") },
-                    supportingText = {
-                        Text(
-                            text = stringResource(R.string.system_name_hint),
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    },
+                    placeholder = { Text("Cibus, Shufersal") },
+                    enabled = phoneNumber.isBlank(),
                     isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider()
                 
-                // Section 3: Display Name
+                // Display Name (optional)
                 Text(
-                    text = "👤 " + stringResource(R.string.sender_display_name),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    text = "👤 " + stringResource(R.string.sender_display_name) + " (Optional)",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 
                 OutlinedTextField(
                     value = displayName,
                     onValueChange = { displayName = it },
-                    label = { Text(stringResource(R.string.display_name_label)) },
                     placeholder = { Text(stringResource(R.string.display_name_placeholder)) },
-                    supportingText = {
-                        Text(
-                            text = stringResource(R.string.display_name_hint),
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
+                
+                if (showError) {
+                    Text(
+                        text = "⚠️ Enter phone number OR system name",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         },
         confirmButton = {
@@ -711,7 +650,7 @@ private fun EditSenderDialog(
                         showError = true
                     } else {
                         val identifier = if (hasPhone) {
-                            "$phonePrefix${phoneNumber.replace("-", "")}"
+                            "$phonePrefix$phoneNumber"
                         } else {
                             systemName.trim()
                         }
@@ -731,7 +670,11 @@ private fun EditSenderDialog(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.dialog_cancel))
             }
-        }
+        },
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .padding(horizontal = 16.dp)
     )
 }
 
