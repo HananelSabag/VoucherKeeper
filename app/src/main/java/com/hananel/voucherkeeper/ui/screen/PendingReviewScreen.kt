@@ -87,7 +87,10 @@ fun PendingReviewScreen(
                         voucher = voucher,
                         onApprove = { viewModel.approveVoucher(it) },
                         onReject = { viewModel.rejectVoucher(it) },
-                        onApproveWithSender = { viewModel.approveVoucherAndSender(it) }
+                        onApproveWithSender = { viewModel.approveVoucherAndSender(it) },
+                        onUpdateVoucher = { id: Long, name: String?, amount: String?, merchant: String?, url: String?, code: String? -> 
+                            viewModel.updateVoucher(id, name, amount, merchant, url, code) 
+                        }
                     )
                 }
             }

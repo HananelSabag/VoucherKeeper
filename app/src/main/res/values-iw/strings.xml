@@ -30,6 +30,10 @@
     <string name="voucher_manual_entry">הוזן ידנית</string>
     <string name="voucher_edit_name">ערוך שם</string>
     <string name="voucher_edit_dialog_title">ערוך פרטי שובר</string>
+    <string name="voucher_edit_full_dialog_title">ערוך שובר - שליטה מלאה</string>
+    <string name="voucher_edit_full_hint">תקן שגיאות פענוח או עדכן כל שדה</string>
+    <string name="pending_edit_dialog_title">תיקון שגיאות פענוח</string>
+    <string name="pending_edit_hint">הפרסר שלנו עלול לטעות - תקן לפני אישור!</string>
     <string name="voucher_edit_name_dialog_title">ערוך שם שולח</string>
     <string name="voucher_edit_name_hint">שם תצוגה ידידותי</string>
     <string name="voucher_no_name">שולח לא ידוע</string>

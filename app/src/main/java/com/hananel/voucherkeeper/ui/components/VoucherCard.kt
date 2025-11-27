@@ -5,6 +5,8 @@ import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
@@ -39,6 +41,7 @@ fun VoucherCard(
     onDelete: (Long) -> Unit,
     onUpdateName: (Long, String) -> Unit = { _, _ -> },
     onUpdateAmount: (Long, String?) -> Unit = { _, _ -> },
+    onUpdateVoucher: (id: Long, name: String?, amount: String?, merchant: String?, url: String?, code: String?) -> Unit = { _, _, _, _, _, _ -> },
     otherVouchersCount: Int = 0,
     totalAmount: String? = null,
     modifier: Modifier = Modifier
@@ -279,14 +282,20 @@ fun VoucherCard(
         EditVoucherDialog(
             currentName = voucher.senderName ?: "",
             currentAmount = voucher.amount ?: "",
+            currentMerchantName = voucher.merchantName ?: "",
+            currentUrl = voucher.voucherUrl ?: "",
+            currentCode = voucher.redeemCode ?: "",
             onDismiss = { showEditDialog = false },
-            onConfirm = { newName, newAmount ->
-                if (newName != voucher.senderName) {
-                    onUpdateName(voucher.id, newName)
-                }
-                if (newAmount != voucher.amount) {
-                    onUpdateAmount(voucher.id, newAmount.takeIf { it.isNotBlank() })
-                }
+            onConfirm = { newName, newAmount, newMerchant, newUrl, newCode ->
+                // Update all fields
+                onUpdateVoucher(
+                    voucher.id,
+                    newName.takeIf { it.isNotBlank() },
+                    newAmount.takeIf { it.isNotBlank() },
+                    newMerchant.takeIf { it.isNotBlank() },
+                    newUrl.takeIf { it.isNotBlank() },
+                    newCode.takeIf { it.isNotBlank() }
+                )
                 showEditDialog = false
             }
         )
@@ -347,26 +356,86 @@ private fun VoucherDetailRow(
 private fun EditVoucherDialog(
     currentName: String,
     currentAmount: String,
+    currentMerchantName: String,
+    currentUrl: String,
+    currentCode: String,
     onDismiss: () -> Unit,
-    onConfirm: (String, String) -> Unit
+    onConfirm: (name: String, amount: String, merchant: String, url: String, code: String) -> Unit
 ) {
     var name by remember { mutableStateOf(currentName) }
     var amount by remember { mutableStateOf(currentAmount) }
+    var merchantName by remember { mutableStateOf(currentMerchantName) }
+    var voucherUrl by remember { mutableStateOf(currentUrl) }
+    var redeemCode by remember { mutableStateOf(currentCode) }
+    var showError by remember { mutableStateOf(false) }
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.voucher_edit_dialog_title)) },
+        title = { 
+            Text(
+                text = stringResource(R.string.voucher_edit_full_dialog_title),
+                style = MaterialTheme.typography.titleLarge
+            ) 
+        },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                // Info banner
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.voucher_edit_full_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
+                // Display name
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(stringResource(R.string.voucher_edit_name_hint)) },
-                    placeholder = { Text("Shufersal, Terminal X...") },
+                    placeholder = { Text("My Store, Friendly Name...") },
+                    supportingText = { Text("Optional friendly display name") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
+                HorizontalDivider()
+                
+                // Merchant/Title (required)
+                OutlinedTextField(
+                    value = merchantName,
+                    onValueChange = { 
+                        merchantName = it
+                        showError = false
+                    },
+                    label = { Text(stringResource(R.string.add_voucher_merchant) + " *") },
+                    placeholder = { Text("Shufersal, Terminal X...") },
+                    supportingText = { Text("Card title - shown prominently") },
+                    isError = showError && merchantName.isBlank(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                // Amount (optional)
                 OutlinedTextField(
                     value = amount,
                     onValueChange = { amount = it },
@@ -377,18 +446,56 @@ private fun EditVoucherDialog(
                             text = if (amount.isBlank()) {
                                 stringResource(R.string.voucher_amount_not_found)
                             } else {
-                                "Amount will be updated"
-                            },
-                            style = MaterialTheme.typography.bodySmall
+                                "Will display: $amount"
+                            }
                         )
                     },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                HorizontalDivider()
+                
+                // URL
+                OutlinedTextField(
+                    value = voucherUrl,
+                    onValueChange = { voucherUrl = it },
+                    label = { Text(stringResource(R.string.add_voucher_url_label)) },
+                    placeholder = { Text("https://...") },
+                    supportingText = { Text("Link to use the voucher") },
+                    singleLine = false,
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                // Redeem Code
+                OutlinedTextField(
+                    value = redeemCode,
+                    onValueChange = { redeemCode = it },
+                    label = { Text(stringResource(R.string.add_voucher_code_label)) },
+                    placeholder = { Text("ABC123XYZ") },
+                    supportingText = { Text("Code to redeem") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(name, amount) }) {
+            Button(
+                onClick = {
+                    if (merchantName.isBlank()) {
+                        showError = true
+                    } else {
+                        onConfirm(
+                            name.trim(),
+                            amount.trim(),
+                            merchantName.trim(),
+                            voucherUrl.trim(),
+                            redeemCode.trim()
+                        )
+                    }
+                }
+            ) {
                 Text(stringResource(R.string.dialog_confirm))
             }
         },

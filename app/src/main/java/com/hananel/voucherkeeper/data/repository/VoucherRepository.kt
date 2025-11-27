@@ -221,5 +221,29 @@ class VoucherRepository @Inject constructor(
             voucherDao.updateVoucher(updated)
         }
     }
+    
+    /**
+     * Update voucher - full edit (all fields).
+     */
+    suspend fun updateVoucher(
+        voucherId: Long,
+        newName: String?,
+        newAmount: String?,
+        newMerchant: String?,
+        newUrl: String?,
+        newCode: String?
+    ) {
+        val voucher = voucherDao.getVoucherById(voucherId)
+        voucher?.let { current ->
+            val updated = current.copy(
+                senderName = newName?.takeIf { it.isNotBlank() } ?: current.senderName,
+                amount = newAmount?.takeIf { it.isNotBlank() } ?: current.amount,
+                merchantName = newMerchant?.takeIf { it.isNotBlank() } ?: current.merchantName,
+                voucherUrl = newUrl?.takeIf { it.isNotBlank() } ?: current.voucherUrl,
+                redeemCode = newCode?.takeIf { it.isNotBlank() } ?: current.redeemCode
+            )
+            voucherDao.updateVoucher(updated)
+        }
+    }
 }
 
