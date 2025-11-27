@@ -224,16 +224,27 @@ class ParserEngine @Inject constructor() {
         
         // Filter out URLs that are likely terms/regulations
         val voucherUrls = urls.filter { url ->
-            val urlLower = url.lowercase()
+            // Decode URL to handle Hebrew/encoded characters
+            val decodedUrl = try {
+                java.net.URLDecoder.decode(url, "UTF-8")
+            } catch (e: Exception) {
+                url // If decoding fails, use original
+            }
+            
+            val urlLower = decodedUrl.lowercase()
+            val originalUrlLower = url.lowercase()
             val textBeforeUrl = text.substringBefore(url, "").takeLast(50).lowercase()
             
-            // Check if URL or text before it contains terms keywords
+            // Check if URL (decoded or original) or text before it contains terms keywords
             val isTermsUrl = termsKeywords.any { keyword ->
-                urlLower.contains(keyword) || textBeforeUrl.contains(keyword)
+                urlLower.contains(keyword, ignoreCase = true) || 
+                originalUrlLower.contains(keyword, ignoreCase = true) ||
+                textBeforeUrl.contains(keyword, ignoreCase = true)
             }
             
             if (isTermsUrl) {
                 Log.d(TAG, "  ⚠️ Filtered out terms URL: $url")
+                Log.d(TAG, "      Decoded: $decodedUrl")
             }
             
             !isTermsUrl
