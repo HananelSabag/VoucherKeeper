@@ -168,10 +168,19 @@
     <string name="dialog_confirm">אישור</string>
     <string name="dialog_add">הוסף</string>
     <string name="dialog_cancel">ביטול</string>
+    <string name="dialog_close">סגור</string>
+    <string name="dialog_url_full_title">קישור שובר מלא</string>
     <string name="dialog_delete_title">למחוק שובר?</string>
     <string name="dialog_delete_message">פעולה זו אינה ניתנת לביטול.</string>
     <string name="dialog_reject_title">לדחות הודעה?</string>
     <string name="dialog_reject_message">הודעה זו תימחק לצמיתות.</string>
+    
+    <!-- Actions -->
+    <string name="action_copy">העתק</string>
+    <string name="action_view_full">הצג מלא</string>
+    <string name="copied_to_clipboard">הועתק ללוח</string>
+    <string name="voucher_code_label">קוד מימוש</string>
+    <string name="voucher_url_label">קישור לשובר</string>
     
     <!-- Toast Messages -->
     <string name="toast_copied">הועתק ללוח</string>
