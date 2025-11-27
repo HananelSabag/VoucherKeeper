@@ -42,6 +42,7 @@
     <string name="action_approve">Approve</string>
     <string name="action_reject">Reject</string>
     <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
     <string name="action_copy_code">Copy Code</string>
     <string name="action_open_link">Open Link</string>
     <string name="action_add_sender">Add Sender to Approved List</string>

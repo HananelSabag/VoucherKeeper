@@ -42,6 +42,7 @@
     <string name="action_approve">אשר</string>
     <string name="action_reject">דחה</string>
     <string name="action_delete">מחק</string>
+    <string name="action_edit">ערוך</string>
     <string name="action_copy_code">העתק קוד</string>
     <string name="action_open_link">פתח קישור</string>
     <string name="action_add_sender">הוסף שולח לרשימת מאושרים</string>
