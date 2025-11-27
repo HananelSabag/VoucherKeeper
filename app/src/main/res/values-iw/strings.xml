@@ -88,6 +88,7 @@
     <string name="approved_senders_name_hint">שם תצוגה (אופציונלי)</string>
     <string name="approved_senders_empty">אין שולחים מאושרים עדיין</string>
     <string name="approved_senders_empty_desc">הוסף שולחים מהימנים כדי לשמור הודעות אוטומטית</string>
+    <string name="approved_senders_edit_title">ערוך שולח מאושר</string>
     <string name="approved_senders_delete_title">מחק שולח?</string>
     <string name="approved_senders_delete_message">האם אתה בטוח שברצונך להסיר את %1$s מהרשימה?</string>
     <string name="approved_senders_phone_placeholder">+972501234567 או שופרסל</string>
