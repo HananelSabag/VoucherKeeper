@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
@@ -124,10 +125,21 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
     Scaffold(
         modifier = Modifier.statusBarsPadding(),
         bottomBar = {
-            NavigationBar {
+            // Hide bottom bar on Settings screen
+            if (currentDestination?.route != Screen.Settings.route) {
+                NavigationBar {
                 // Pending Review (Left)
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.Warning, contentDescription = null) },
+                    icon = { 
+                        Icon(
+                            Icons.Default.Warning, 
+                            contentDescription = null,
+                            tint = if (currentDestination?.hierarchy?.any { it.route == Screen.Pending.route } == true)
+                                Color(0xFFFFA726) // Orange
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
                     label = { Text(stringResource(R.string.nav_pending)) },
                     selected = currentDestination?.hierarchy?.any { it.route == Screen.Pending.route } == true,
                     onClick = {
@@ -143,7 +155,16 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
                 
                 // Approved Vouchers (Center - Default)
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.CheckCircle, contentDescription = null) },
+                    icon = { 
+                        Icon(
+                            Icons.Default.CheckCircle, 
+                            contentDescription = null,
+                            tint = if (currentDestination?.hierarchy?.any { it.route == Screen.Approved.route } == true)
+                                Color(0xFF66BB6A) // Green
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
                     label = { Text(stringResource(R.string.nav_approved)) },
                     selected = currentDestination?.hierarchy?.any { it.route == Screen.Approved.route } == true,
                     onClick = {
@@ -159,7 +180,16 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
                 
                 // Approved Senders (Right)
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.AccountCircle, contentDescription = null) },
+                    icon = { 
+                        Icon(
+                            Icons.Default.AccountCircle, 
+                            contentDescription = null,
+                            tint = if (currentDestination?.hierarchy?.any { it.route == Screen.ApprovedSenders.route } == true)
+                                Color(0xFF42A5F5) // Blue
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
                     label = { Text(stringResource(R.string.nav_approved_senders)) },
                     selected = currentDestination?.hierarchy?.any { it.route == Screen.ApprovedSenders.route } == true,
                     onClick = {
@@ -172,6 +202,7 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
                         }
                     }
                 )
+                }
             }
         }
     ) { innerPadding ->

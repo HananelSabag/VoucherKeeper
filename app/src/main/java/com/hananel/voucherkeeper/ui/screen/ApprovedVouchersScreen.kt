@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,9 +51,16 @@ fun ApprovedVouchersScreen(
                             contentDescription = "Logo",
                             modifier = Modifier.size(32.dp)
                         )
-                        Text(stringResource(R.string.approved_title))
+                        Text(
+                            text = stringResource(R.string.approved_title),
+                            style = MaterialTheme.typography.titleLarge
+                        )
                     }
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.primary
+                ),
                 actions = {
                     IconButton(onClick = onShowHelp) {
                         Icon(
