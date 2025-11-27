@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.hananel.voucherkeeper"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.hananel.voucherkeeper"
         minSdk = 33
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 

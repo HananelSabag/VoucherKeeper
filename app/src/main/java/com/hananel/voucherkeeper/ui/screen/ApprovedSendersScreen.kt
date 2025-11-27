@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -330,7 +329,7 @@ private fun AddSenderDialog(
                             readOnly = true,
                             enabled = systemName.isBlank(),
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPrefixMenu) },
-                            modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = systemName.isBlank()),
+                            modifier = Modifier.menuAnchor(),
                             singleLine = true
                         )
                         ExposedDropdownMenu(
@@ -543,7 +542,7 @@ private fun EditSenderDialog(
                             readOnly = true,
                             enabled = systemName.isBlank(),
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPrefixMenu) },
-                            modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable, enabled = systemName.isBlank()),
+                            modifier = Modifier.menuAnchor(),
                             singleLine = true
                         )
                         ExposedDropdownMenu(

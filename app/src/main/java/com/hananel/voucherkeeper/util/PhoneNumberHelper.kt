@@ -53,4 +53,3 @@ object PhoneNumberHelper {
         return normalized1.isNotEmpty() && normalized1 == normalized2
     }
 }
-
