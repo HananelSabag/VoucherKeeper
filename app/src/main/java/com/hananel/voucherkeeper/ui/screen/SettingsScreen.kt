@@ -24,6 +24,7 @@ import com.hananel.voucherkeeper.ui.viewmodel.SettingsViewModel
 fun SettingsScreen(
     onShowHelp: () -> Unit = {},
     onBack: () -> Unit = {},
+    onNavigateToApprovedSenders: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -140,7 +141,7 @@ fun SettingsScreen(
             
             // Button to manage approved senders
             OutlinedButton(
-                onClick = { /* TODO: Navigate to approved senders screen */ },
+                onClick = onNavigateToApprovedSenders,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.settings_approved_senders))

@@ -207,7 +207,12 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
             composable(Screen.Settings.route) {
                 SettingsScreen(
                     onShowHelp = onShowHelp,
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onNavigateToApprovedSenders = {
+                        navController.navigate(Screen.ApprovedSenders.route) {
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
             
