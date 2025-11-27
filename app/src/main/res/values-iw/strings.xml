@@ -29,6 +29,7 @@
     <string name="voucher_view_details">הצג פרטים</string>
     <string name="voucher_manual_entry">הוזן ידנית</string>
     <string name="voucher_edit_name">ערוך שם</string>
+    <string name="voucher_edit_dialog_title">ערוך פרטי שובר</string>
     <string name="voucher_edit_name_dialog_title">ערוך שם שולח</string>
     <string name="voucher_edit_name_hint">שם תצוגה ידידותי</string>
     <string name="voucher_no_name">שולח לא ידוע</string>
