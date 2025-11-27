@@ -1,5 +1,6 @@
 # Built application files
 *.apk
+!Voucher Keeper.apk
 *.ap_
 *.aab
 
