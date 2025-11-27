@@ -204,8 +204,22 @@ class ParserEngine @Inject constructor() {
         
         // Multiple URLs - smart filtering to find the voucher URL (not terms/regulations)
         val termsKeywords = listOf(
-            "תקנון", "תנאים", "terms", "conditions", "regulations", 
-            "policy", "תנאי", "שימוש", "rules", "legal"
+            // Hebrew - תקנונים ותנאים
+            "תקנון", "תנאים", "תנאי", "שימוש", "תקנון-שימוש", 
+            "תנאי-שימוש", "מדיניות", "פרטיות", "מידע", "עזרה",
+            
+            // English - Full words
+            "terms", "conditions", "regulations", "policy", "privacy",
+            "rules", "legal", "agreement", "disclaimer", "guidelines",
+            "faq", "help", "support", "about", "info", "details",
+            
+            // English - Common variations in URLs
+            "terms-and-conditions", "termsandconditions", "terms_conditions",
+            "terms-of-use", "termsofuse", "terms_of_use",
+            "t-and-c", "tandc", "t&c", "tnc",
+            "privacy-policy", "privacypolicy", "privacy_policy",
+            "user-agreement", "useragreement",
+            "learn-more", "learnmore", "more-info", "moreinfo"
         )
         
         // Filter out URLs that are likely terms/regulations
