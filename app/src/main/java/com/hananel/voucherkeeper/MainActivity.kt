@@ -180,9 +180,13 @@ fun VoucherKeeperApp(
         }
     }
     
-    Scaffold(
-        modifier = Modifier.statusBarsPadding(),
-        containerColor = MaterialTheme.colorScheme.background,
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Scaffold(
+            modifier = Modifier.statusBarsPadding(),
+            containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             // Hide bottom bar on Settings screen
             if (currentDestination?.route != Screen.Settings.route) {
@@ -379,5 +383,6 @@ fun VoucherKeeperApp(
                 )
             }
         }
+    }
     }
 }
