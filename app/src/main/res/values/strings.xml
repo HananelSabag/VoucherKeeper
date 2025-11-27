@@ -168,10 +168,19 @@
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_add">Add</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_close">Close</string>
+    <string name="dialog_url_full_title">Full Voucher URL</string>
     <string name="dialog_delete_title">Delete Voucher?</string>
     <string name="dialog_delete_message">This action cannot be undone.</string>
     <string name="dialog_reject_title">Reject Message?</string>
     <string name="dialog_reject_message">This message will be permanently discarded.</string>
+    
+    <!-- Actions -->
+    <string name="action_copy">Copy</string>
+    <string name="action_view_full">View Full</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="voucher_code_label">Redemption Code</string>
+    <string name="voucher_url_label">Voucher Link</string>
     
     <!-- Toast Messages -->
     <string name="toast_copied">Copied to clipboard</string>
