@@ -16,7 +16,7 @@ object LocaleHelper {
     fun applyLanguage(context: Context, languageCode: String): Context {
         val locale = when (languageCode) {
             "en" -> Locale.ENGLISH
-            "he" -> Locale("he", "IL")
+            "he" -> Locale.forLanguageTag("he-IL")
             else -> getSystemLocale() // "auto"
         }
         

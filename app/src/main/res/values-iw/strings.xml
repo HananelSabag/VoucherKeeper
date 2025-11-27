@@ -103,11 +103,11 @@
     <string name="onboarding_strict_mode_title">🔒 מצב מוגבל</string>
     <string name="onboarding_strict_mode_desc">כשמופעל: רק שולחים מאושרים יישמרו.\nכשכבוי: המנגנון החכם שלנו מנתח את כל ההודעות ומסנן ספאם אוטומטית.</string>
     <string name="onboarding_strict_mode_enable">הפעל מצב מוגבל</string>
-    <string name="onboarding_strict_mode_recommendation">מומלץ: השאר כבוי כדי לאפשר ל-AI לעבוד בשבילך</string>
+    <string name="onboarding_strict_mode_recommendation">מומלץ: השאר כבוי כדי לאפשר לאלגוריתם החכם לעבוד בשבילך</string>
     <string name="onboarding_permissions_warning_title">נדרשות הרשאות</string>
     <string name="onboarding_permissions_warning_message">האפליקציה זקוקה להרשאות SMS והתראות כדי לעבוד כראוי. אנא אפשר אותן כדי להמשיך.</string>
     <string name="onboarding_strict_mode_warning_title">מצב חכם פעיל</string>
-    <string name="onboarding_strict_mode_warning_message">מצב מוגבל כבוי. המנגנון החכם שלנו ינתח את כל הודעות ה-SMS וישמור אוטומטית שוברים אמיתיים ל-Pending לבדיקה.\n\nאתה יכול לסמוך על ה-AI שלנו - הוא מסנן ספאם ושומר רק שוברים לגיטימיים.</string>
+    <string name="onboarding_strict_mode_warning_message">מצב מוגבל כבוי. האלגוריתם החכם שלנו ינתח את כל הודעות ה-SMS וישמור אוטומטית שוברים אמיתיים ל-Pending לבדיקה.\n\nאתה יכול לסמוך על האלגוריתם החכם שלנו - הוא מסנן ספאם ושומר רק שוברים לגיטימיים.</string>
     <string name="onboarding_understood">הבנתי</string>
     <string name="onboarding_go_back">חזור</string>
     <string name="onboarding_next">הבא</string>

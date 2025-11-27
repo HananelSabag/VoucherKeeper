@@ -143,7 +143,10 @@ fun OnboardingScreen(
                                 }
                             },
                             strictModeEnabled = strictModeEnabled,
-                            onStrictModeChange = { strictModeEnabled = it }
+                            onStrictModeChange = { strictModeEnabled = it },
+                            onAddSender = { phone, name ->
+                                viewModel.addApprovedSender(phone, name)
+                            }
                         )
                     }
                 }
@@ -413,7 +416,8 @@ private fun PermissionsAndSendersPage(
     onRequestSms: () -> Unit,
     onRequestNotifications: () -> Unit,
     strictModeEnabled: Boolean,
-    onStrictModeChange: (Boolean) -> Unit
+    onStrictModeChange: (Boolean) -> Unit,
+    onAddSender: (String, String?) -> Unit
 ) {
     var showAddSenderDialog by remember { mutableStateOf(false) }
     
@@ -530,10 +534,14 @@ private fun PermissionsAndSendersPage(
         }
     }
     
-    // Add Sender Dialog (simplified for onboarding)
+    // Add Sender Dialog (functional for onboarding)
     if (showAddSenderDialog) {
         AddSenderOnboardingDialog(
-            onDismiss = { showAddSenderDialog = false }
+            onDismiss = { showAddSenderDialog = false },
+            onAdd = { phone, name ->
+                onAddSender(phone, name)
+                showAddSenderDialog = false
+            }
         )
     }
 }
@@ -625,28 +633,68 @@ private fun PermissionItemWithButton(
 
 @Composable
 private fun AddSenderOnboardingDialog(
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onAdd: (String, String?) -> Unit
 ) {
+    var phone by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
+    
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.onboarding_add_sender)) },
         text = {
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     text = stringResource(R.string.onboarding_approved_senders_desc),
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                
+                OutlinedTextField(
+                    value = phone,
+                    onValueChange = { 
+                        phone = it
+                        showError = false
+                    },
+                    label = { Text(stringResource(R.string.approved_senders_phone_hint) + " *") },
+                    placeholder = { Text(stringResource(R.string.approved_senders_phone_placeholder)) },
+                    isError = showError && phone.isBlank(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(R.string.approved_senders_name_hint)) },
+                    placeholder = { Text(stringResource(R.string.approved_senders_name_placeholder)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
                 Text(
-                    text = "You can add approved senders later from the Contacts tab at any time.",
+                    text = stringResource(R.string.approved_senders_tip),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         },
         confirmButton = {
+            TextButton(
+                onClick = {
+                    if (phone.isBlank()) {
+                        showError = true
+                    } else {
+                        onAdd(phone.trim(), name.trim().takeIf { it.isNotBlank() })
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.dialog_confirm))
+            }
+        },
+        dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.onboarding_understood))
+                Text(stringResource(R.string.dialog_cancel))
             }
         }
     )

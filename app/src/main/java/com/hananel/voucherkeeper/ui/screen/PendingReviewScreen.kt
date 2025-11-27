@@ -97,22 +97,27 @@ fun PendingReviewScreen(
 @Composable
 private fun EmptyState(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
+            text = "⏳",
+            style = MaterialTheme.typography.displayLarge,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        Text(
             text = stringResource(R.string.pending_empty_title),
             style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(R.string.pending_empty_message),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 32.dp)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.hananel.voucherkeeper.util.LocaleHelper
 import kotlinx.coroutines.runBlocking
@@ -67,6 +68,9 @@ class MainActivity : ComponentActivity() {
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install splash screen before super.onCreate()
+        installSplashScreen()
+        
         super.onCreate(savedInstanceState)
         
         setContent {
@@ -139,16 +143,12 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
             // Hide bottom bar on Settings screen
             if (currentDestination?.route != Screen.Settings.route) {
                 NavigationBar {
-                // Pending Review (Left)
+                // Pending Review (Left) - Orange/Warning color
                 NavigationBarItem(
                     icon = { 
                         Icon(
                             Icons.Default.Warning, 
-                            contentDescription = null,
-                            tint = if (currentDestination?.hierarchy?.any { it.route == Screen.Pending.route } == true)
-                                Color(0xFFFFA726) // Orange
-                            else
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                            contentDescription = null
                         )
                     },
                     label = { Text(stringResource(R.string.nav_pending)) },
@@ -161,19 +161,22 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.tertiary,
+                        selectedTextColor = MaterialTheme.colorScheme.tertiary,
+                        indicatorColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
                 )
                 
-                // Approved Vouchers (Center - Default)
+                // Approved Vouchers (Center - Default) - Green/Success color
                 NavigationBarItem(
                     icon = { 
                         Icon(
                             Icons.Default.CheckCircle, 
-                            contentDescription = null,
-                            tint = if (currentDestination?.hierarchy?.any { it.route == Screen.Approved.route } == true)
-                                Color(0xFF66BB6A) // Green
-                            else
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                            contentDescription = null
                         )
                     },
                     label = { Text(stringResource(R.string.nav_approved)) },
@@ -186,19 +189,22 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.secondary,
+                        selectedTextColor = MaterialTheme.colorScheme.secondary,
+                        indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
                 )
                 
-                // Approved Senders (Right)
+                // Approved Senders (Right) - Blue/Primary color
                 NavigationBarItem(
                     icon = { 
                         Icon(
                             Icons.Default.AccountCircle, 
-                            contentDescription = null,
-                            tint = if (currentDestination?.hierarchy?.any { it.route == Screen.ApprovedSenders.route } == true)
-                                Color(0xFF42A5F5) // Blue
-                            else
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                            contentDescription = null
                         )
                     },
                     label = { Text(stringResource(R.string.nav_approved_senders)) },
@@ -211,7 +217,14 @@ fun VoucherKeeperApp(onShowHelp: () -> Unit = {}) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
                 )
                 }
             }

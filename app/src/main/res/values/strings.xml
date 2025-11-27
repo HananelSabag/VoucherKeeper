@@ -101,13 +101,13 @@
     <string name="onboarding_add_sender">Add Approved Sender</string>
     <string name="onboarding_skip_for_now">Skip for now</string>
     <string name="onboarding_strict_mode_title">🔒 Strict Mode</string>
-    <string name="onboarding_strict_mode_desc">When enabled: ONLY approved senders will be saved.\nWhen disabled: Our smart engine analyzes ALL messages and filters spam automatically.</string>
+    <string name="onboarding_strict_mode_desc">When enabled: ONLY approved senders will be saved.\nWhen disabled: Our smart algorithm analyzes ALL messages and filters spam automatically.</string>
     <string name="onboarding_strict_mode_enable">Enable Strict Mode</string>
-    <string name="onboarding_strict_mode_recommendation">Recommended: Keep OFF to let our AI work for you</string>
+    <string name="onboarding_strict_mode_recommendation">Recommended: Keep OFF to let our smart algorithm work for you</string>
     <string name="onboarding_permissions_warning_title">Permissions Required</string>
     <string name="onboarding_permissions_warning_message">The app needs SMS and Notification permissions to work properly. Please grant them to continue.</string>
     <string name="onboarding_strict_mode_warning_title">Smart Mode Active</string>
-    <string name="onboarding_strict_mode_warning_message">Strict Mode is OFF. Our smart engine will analyze all SMS messages and automatically save real vouchers to Pending review.\n\nYou can trust our AI - it filters spam and only saves legitimate vouchers.</string>
+    <string name="onboarding_strict_mode_warning_message">Strict Mode is OFF. Our smart algorithm will analyze all SMS messages and automatically save real vouchers to Pending review.\n\nYou can trust our smart algorithm - it filters spam and only saves legitimate vouchers.</string>
     <string name="onboarding_understood">I Understand</string>
     <string name="onboarding_go_back">Go Back</string>
     <string name="onboarding_next">Next</string>

@@ -44,22 +44,23 @@ fun ApprovedVouchersScreen(
                 title = { 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.app_logo),
                             contentDescription = "Logo",
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(40.dp)
                         )
                         Text(
                             text = stringResource(R.string.approved_title),
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 actions = {
                     IconButton(onClick = onShowHelp) {
@@ -120,22 +121,27 @@ fun ApprovedVouchersScreen(
 @Composable
 private fun EmptyState(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
+            text = "🎫",
+            style = MaterialTheme.typography.displayLarge,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        Text(
             text = stringResource(R.string.approved_empty_title),
             style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(R.string.approved_empty_message),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 32.dp)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

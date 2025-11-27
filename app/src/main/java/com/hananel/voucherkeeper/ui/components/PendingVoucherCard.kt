@@ -31,7 +31,7 @@ fun PendingVoucherCard(
         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = androidx.compose.ui.graphics.Color(0xFFFFF3E0) // Light orange
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer // Theme-aware orange/warning
         )
     ) {
         Column(
@@ -68,7 +68,7 @@ fun PendingVoucherCard(
                 Text(
                     text = "💰 " + stringResource(R.string.voucher_amount, amount),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = androidx.compose.ui.graphics.Color(0xFFE65100), // Dark orange
+                    color = MaterialTheme.colorScheme.tertiary, // Theme-aware warning/pending color
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -89,7 +89,7 @@ fun PendingVoucherCard(
                 Text(
                     text = "🔗 " + stringResource(R.string.voucher_url),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = androidx.compose.ui.graphics.Color(0xFF1976D2) // Blue
+                    color = MaterialTheme.colorScheme.primary // Theme-aware primary color
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }

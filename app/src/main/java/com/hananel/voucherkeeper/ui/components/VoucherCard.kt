@@ -32,7 +32,7 @@ fun VoucherCard(
         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = androidx.compose.ui.graphics.Color(0xFFE8F5E9) // Light green
+            containerColor = MaterialTheme.colorScheme.secondaryContainer // Theme-aware green
         )
     ) {
         Column(
@@ -84,7 +84,7 @@ fun VoucherCard(
                 Text(
                     text = "💰 " + stringResource(R.string.voucher_amount, amount),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = androidx.compose.ui.graphics.Color(0xFF2E7D32), // Dark green
+                    color = MaterialTheme.colorScheme.secondary, // Theme-aware success color
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -105,7 +105,7 @@ fun VoucherCard(
                 Text(
                     text = "🔗 " + stringResource(R.string.voucher_url),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = androidx.compose.ui.graphics.Color(0xFF1976D2) // Blue
+                    color = MaterialTheme.colorScheme.primary // Theme-aware primary color
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }

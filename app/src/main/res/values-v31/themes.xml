@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Splash Screen Theme (fallback for pre-Android 12) -->
+    <!-- Splash Screen Theme for Android 12+ -->
     <style name="Theme.VoucherKeeper.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/app_logo</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
         <item name="postSplashScreenTheme">@style/Theme.VoucherKeeper</item>
     </style>
 
     <style name="Theme.VoucherKeeper" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
+

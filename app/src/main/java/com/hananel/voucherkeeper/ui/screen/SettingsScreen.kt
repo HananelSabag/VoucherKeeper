@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults
@@ -34,7 +34,6 @@ fun SettingsScreen(
     val notifyApproved by viewModel.notifyApproved.collectAsState()
     val notifyPending by viewModel.notifyPending.collectAsState()
     val strictMode by viewModel.strictMode.collectAsState()
-    var showRestartDialog by remember { mutableStateOf(false) }
     
     Scaffold(
         topBar = {
@@ -52,7 +51,7 @@ fun SettingsScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.cd_back_button)
                         )
                     }
@@ -106,11 +105,12 @@ fun SettingsScreen(
                 ),
                 onValueChange = { 
                     viewModel.setLanguage(it)
-                    showRestartDialog = true
+                    // Recreate activity immediately to apply new language
+                    (context as? android.app.Activity)?.recreate()
                 }
             )
             
-            Divider()
+            HorizontalDivider()
             
             // Notifications Section
             Text(
@@ -131,7 +131,7 @@ fun SettingsScreen(
                 onCheckedChange = { viewModel.setNotifyPending(it) }
             )
             
-            Divider()
+            HorizontalDivider()
             
             // Filters Section
             Text(
@@ -152,7 +152,8 @@ fun SettingsScreen(
             // Button to manage approved senders
             OutlinedButton(
                 onClick = onNavigateToApprovedSenders,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp) // Rounded corners!
             ) {
                 Text(stringResource(R.string.settings_approved_senders))
             }
@@ -178,29 +179,6 @@ fun SettingsScreen(
             )
         }
     }
-    
-    // Restart dialog for language changes
-    if (showRestartDialog) {
-        AlertDialog(
-            onDismissRequest = { showRestartDialog = false },
-            title = { Text(stringResource(R.string.settings_restart_required)) },
-            text = { Text(stringResource(R.string.settings_restart_message)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        (context as? android.app.Activity)?.recreate()
-                    }
-                ) {
-                    Text(stringResource(R.string.settings_restart_now))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showRestartDialog = false }) {
-                    Text(stringResource(R.string.settings_restart_later))
-                }
-            }
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -223,9 +201,10 @@ private fun SettingsDropdown(
             readOnly = true,
             label = { Text(label) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp), // Rounded corners!
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
         )
         
         ExposedDropdownMenu(

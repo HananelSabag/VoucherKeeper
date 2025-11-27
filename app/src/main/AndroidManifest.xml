@@ -23,7 +23,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.VoucherKeeper">
+            android:theme="@style/Theme.VoucherKeeper.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
