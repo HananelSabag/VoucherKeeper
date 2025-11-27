@@ -38,13 +38,14 @@ fun VoucherCard(
     voucher: VoucherEntity,
     onDelete: (Long) -> Unit,
     onUpdateName: (Long, String) -> Unit = { _, _ -> },
+    onUpdateAmount: (Long, String?) -> Unit = { _, _ -> },
     otherVouchersCount: Int = 0,
     totalAmount: String? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var showEditNameDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
     
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -159,12 +160,12 @@ fun VoucherCard(
                 // Action buttons
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     IconButton(
-                        onClick = { showEditNameDialog = true },
+                        onClick = { showEditDialog = true },
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Edit,
-                            contentDescription = stringResource(R.string.voucher_edit_name),
+                            contentDescription = stringResource(R.string.action_edit),
                             tint = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.size(20.dp)
                         )
@@ -273,14 +274,20 @@ fun VoucherCard(
         }
     }
     
-    // Edit Name Dialog
-    if (showEditNameDialog) {
-        EditNameDialog(
+    // Edit Dialog
+    if (showEditDialog) {
+        EditVoucherDialog(
             currentName = voucher.senderName ?: "",
-            onDismiss = { showEditNameDialog = false },
-            onConfirm = { newName ->
-                onUpdateName(voucher.id, newName)
-                showEditNameDialog = false
+            currentAmount = voucher.amount ?: "",
+            onDismiss = { showEditDialog = false },
+            onConfirm = { newName, newAmount ->
+                if (newName != voucher.senderName) {
+                    onUpdateName(voucher.id, newName)
+                }
+                if (newAmount != voucher.amount) {
+                    onUpdateAmount(voucher.id, newAmount.takeIf { it.isNotBlank() })
+                }
+                showEditDialog = false
             }
         )
     }
@@ -337,27 +344,51 @@ private fun VoucherDetailRow(
 }
 
 @Composable
-private fun EditNameDialog(
+private fun EditVoucherDialog(
     currentName: String,
+    currentAmount: String,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (String, String) -> Unit
 ) {
     var name by remember { mutableStateOf(currentName) }
+    var amount by remember { mutableStateOf(currentAmount) }
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.voucher_edit_name_dialog_title)) },
+        title = { Text(stringResource(R.string.voucher_edit_dialog_title)) },
         text = {
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text(stringResource(R.string.voucher_edit_name_hint)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(R.string.voucher_edit_name_hint)) },
+                    placeholder = { Text("Shufersal, Terminal X...") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                OutlinedTextField(
+                    value = amount,
+                    onValueChange = { amount = it },
+                    label = { Text(stringResource(R.string.add_voucher_amount_label)) },
+                    placeholder = { Text("100 ₪") },
+                    supportingText = { 
+                        Text(
+                            text = if (amount.isBlank()) {
+                                stringResource(R.string.voucher_amount_not_found)
+                            } else {
+                                "Amount will be updated"
+                            },
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(name) }) {
+            TextButton(onClick = { onConfirm(name, amount) }) {
                 Text(stringResource(R.string.dialog_confirm))
             }
         },

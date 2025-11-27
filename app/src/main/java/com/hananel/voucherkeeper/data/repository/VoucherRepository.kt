@@ -210,5 +210,16 @@ class VoucherRepository @Inject constructor(
             voucherDao.updateVoucher(updated)
         }
     }
+    
+    /**
+     * Update voucher amount.
+     */
+    suspend fun updateVoucherAmount(voucherId: Long, newAmount: String?) {
+        val voucher = voucherDao.getVoucherById(voucherId)
+        voucher?.let {
+            val updated = it.copy(amount = newAmount?.takeIf { amt -> amt.isNotBlank() })
+            voucherDao.updateVoucher(updated)
+        }
+    }
 }
 

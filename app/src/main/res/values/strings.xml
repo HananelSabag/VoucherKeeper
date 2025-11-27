@@ -29,6 +29,7 @@
     <string name="voucher_view_details">View Details</string>
     <string name="voucher_manual_entry">Manual Entry</string>
     <string name="voucher_edit_name">Edit Name</string>
+    <string name="voucher_edit_dialog_title">Edit Voucher Details</string>
     <string name="voucher_edit_name_dialog_title">Edit Sender Name</string>
     <string name="voucher_edit_name_hint">Friendly display name</string>
     <string name="voucher_no_name">Unknown Sender</string>
