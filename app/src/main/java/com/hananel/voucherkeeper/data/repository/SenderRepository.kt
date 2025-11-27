@@ -42,5 +42,12 @@ class SenderRepository @Inject constructor(
     suspend fun removeApprovedSender(phone: String) {
         approvedSenderDao.deleteSenderByPhone(phone)
     }
+    
+    /**
+     * Update an approved sender's details.
+     */
+    suspend fun updateApprovedSender(sender: ApprovedSenderEntity) {
+        approvedSenderDao.updateSender(sender)
+    }
 }
 

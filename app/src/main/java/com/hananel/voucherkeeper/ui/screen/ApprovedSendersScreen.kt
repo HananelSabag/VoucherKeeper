@@ -102,7 +102,10 @@ fun ApprovedSendersScreen(
                 ) { sender ->
                     SenderCard(
                         sender = sender,
-                        onDelete = { viewModel.removeApprovedSender(it.phone) }
+                        onDelete = { viewModel.removeApprovedSender(it.phone) },
+                        onEdit = { updatedSender -> 
+                            viewModel.updateApprovedSender(updatedSender) 
+                        }
                     )
                 }
             }
@@ -226,6 +229,18 @@ private fun SenderCard(
             }
         )
     }
+    
+    // Edit dialog
+    if (showEditDialog) {
+        EditSenderDialog(
+            sender = sender,
+            onDismiss = { showEditDialog = false },
+            onEdit = { updatedSender ->
+                onEdit(updatedSender)
+                showEditDialog = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -322,6 +337,91 @@ private fun AddSenderDialog(
                 }
             ) {
                 Text(stringResource(R.string.dialog_add))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.dialog_cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun EditSenderDialog(
+    sender: ApprovedSenderEntity,
+    onDismiss: () -> Unit,
+    onEdit: (ApprovedSenderEntity) -> Unit
+) {
+    var phone by remember { mutableStateOf(sender.phone) }
+    var name by remember { mutableStateOf(sender.name ?: "") }
+    var showError by remember { mutableStateOf(false) }
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { 
+            Text(
+                text = stringResource(R.string.approved_senders_edit_title),
+                style = MaterialTheme.typography.titleLarge
+            ) 
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Phone/Sender field
+                OutlinedTextField(
+                    value = phone,
+                    onValueChange = { 
+                        phone = it
+                        showError = false
+                    },
+                    label = { Text(stringResource(R.string.approved_senders_phone_hint) + " *") },
+                    placeholder = { Text(stringResource(R.string.approved_senders_phone_placeholder)) },
+                    supportingText = {
+                        Text(
+                            text = stringResource(R.string.approved_sender_phone_hint),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
+                    isError = showError && phone.isBlank(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                // Name field (optional)
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(R.string.approved_senders_name_hint)) },
+                    placeholder = { Text(stringResource(R.string.approved_senders_name_placeholder)) },
+                    supportingText = {
+                        Text(
+                            text = stringResource(R.string.approved_sender_name_optional),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (phone.isBlank()) {
+                        showError = true
+                    } else {
+                        val updatedSender = sender.copy(
+                            phone = phone.trim(),
+                            name = name.trim().takeIf { it.isNotBlank() }
+                        )
+                        onEdit(updatedSender)
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.dialog_confirm))
             }
         },
         dismissButton = {

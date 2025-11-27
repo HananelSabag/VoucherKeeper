@@ -106,5 +106,11 @@ class SettingsViewModel @Inject constructor(
             senderRepository.removeApprovedSender(phone)
         }
     }
+    
+    fun updateApprovedSender(sender: ApprovedSenderEntity) {
+        viewModelScope.launch {
+            senderRepository.updateApprovedSender(sender)
+        }
+    }
 }
 

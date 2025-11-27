@@ -28,6 +28,9 @@ interface ApprovedSenderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSender(sender: ApprovedSenderEntity)
     
+    @Update
+    suspend fun updateSender(sender: ApprovedSenderEntity)
+    
     @Delete
     suspend fun deleteSender(sender: ApprovedSenderEntity)
     

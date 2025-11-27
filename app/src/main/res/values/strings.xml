@@ -88,6 +88,7 @@
     <string name="approved_senders_name_hint">Display Name (optional)</string>
     <string name="approved_senders_empty">No approved senders yet</string>
     <string name="approved_senders_empty_desc">Add trusted senders to automatically save their messages</string>
+    <string name="approved_senders_edit_title">Edit Approved Sender</string>
     <string name="approved_senders_delete_title">Delete Sender?</string>
     <string name="approved_senders_delete_message">Are you sure you want to remove %1$s from the list?</string>
     <string name="approved_senders_phone_placeholder">+972501234567 or Shufersal</string>
