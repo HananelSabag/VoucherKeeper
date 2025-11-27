@@ -126,6 +126,23 @@ class ParserEngine @Inject constructor() {
     }
     
     /**
+     * Public method to extract voucher data from plain text.
+     * Used for manual entry when user pastes SMS message.
+     * 
+     * @param messageText Raw SMS text pasted by user
+     * @return ExtractedData with parsed fields (URL, code, amount, merchant)
+     */
+    fun extractFromText(messageText: String): ExtractedData {
+        val mockMessage = SMSMessage(
+            bodyText = messageText,
+            senderPhone = "Manual Entry",
+            senderName = null,
+            timestamp = System.currentTimeMillis()
+        )
+        return extractVoucherData(mockMessage, emptyList())
+    }
+    
+    /**
      * Extract voucher data from SMS message.
      * Attempts to find merchant name, amount, URL, and redemption code.
      */
