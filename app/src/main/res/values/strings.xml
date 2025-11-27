@@ -89,18 +89,18 @@
     <string name="onboarding_manual_desc">Add vouchers manually or review uncertain messages.</string>
     <string name="onboarding_privacy_title">Your Privacy Matters</string>
     <string name="onboarding_privacy_desc">We only process SMS text locally on your device. No data leaves your phone.</string>
+    <string name="onboarding_created_by">Created by Hananel Sabag</string>
     <string name="onboarding_permissions_title">Permissions We Need</string>
     <string name="onboarding_permissions_sms">📱 SMS - To read incoming vouchers</string>
     <string name="onboarding_permissions_notif">🔔 Notifications - To alert you about new vouchers</string>
-    <string name="onboarding_permissions_missing">⚠️ Some permissions missing. Grant them for full functionality.</string>
-    <string name="onboarding_grant_permissions">Grant Permissions</string>
+    <string name="onboarding_grant_sms">Grant SMS Permission</string>
+    <string name="onboarding_grant_notifications">Grant Notifications</string>
     <string name="onboarding_approved_senders_title">Approved Senders (Optional)</string>
     <string name="onboarding_approved_senders_desc">Add phone numbers OR saved names (\"Shufersal\", \"Leumi\"). Auto-save messages from them.</string>
     <string name="onboarding_strict_mode_title">🔒 Strict Mode</string>
     <string name="onboarding_strict_mode_desc">Enable to save ONLY from approved senders. Disable to let our smart engine analyze all.</string>
     <string name="onboarding_strict_mode_enable">Enable Strict Mode</string>
     <string name="onboarding_next">Next</string>
-    <string name="onboarding_skip">Skip</string>
     <string name="onboarding_done">Let\'s Go!</string>
     
     <!-- Permissions -->

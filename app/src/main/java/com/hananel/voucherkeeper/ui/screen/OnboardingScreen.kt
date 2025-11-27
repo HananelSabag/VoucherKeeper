@@ -108,12 +108,21 @@ fun OnboardingScreen(
                 ) {
                     when (currentPage) {
                         0 -> WelcomePage()
-                        1 -> PermissionsPage(
+                        else -> PermissionsAndSendersPage(
                             hasSmsPermission = hasSmsPermission,
                             hasNotificationPermission = hasNotificationPermission,
-                            onRequestPermissions = requestPermissions
-                        )
-                        else -> ApprovedSendersPage(
+                            onRequestSms = {
+                                if (!hasSmsPermission) {
+                                    smsPermissionLauncher.launch(PermissionHandler.getSmsPermissions())
+                                }
+                            },
+                            onRequestNotifications = {
+                                PermissionHandler.getNotificationPermission()?.let { permission ->
+                                    if (!hasNotificationPermission) {
+                                        notificationPermissionLauncher.launch(permission)
+                                    }
+                                }
+                            },
                             strictModeEnabled = strictModeEnabled,
                             onStrictModeChange = { strictModeEnabled = it }
                         )
@@ -131,7 +140,7 @@ fun OnboardingScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        repeat(3) { index ->
+                        repeat(2) { index ->
                             Box(
                                 modifier = Modifier
                                     .size(if (index == currentPage) 12.dp else 8.dp)
@@ -162,7 +171,7 @@ fun OnboardingScreen(
                         
                         Button(
                             onClick = {
-                                if (currentPage < 2) {
+                                if (currentPage < 1) {
                                     currentPage++
                                 } else {
                                     // Save strict mode setting
@@ -175,7 +184,7 @@ fun OnboardingScreen(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(
-                                if (currentPage < 2) 
+                                if (currentPage < 1) 
                                     stringResource(R.string.onboarding_next) 
                                 else 
                                     stringResource(R.string.onboarding_done)
@@ -192,159 +201,102 @@ fun OnboardingScreen(
 private fun WelcomePage() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        // Title
-        Text(
-            text = stringResource(R.string.onboarding_welcome_title),
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.onboarding_welcome_message),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        
-        Spacer(modifier = Modifier.height(40.dp))
-        
-        // How it works
-        Text(
-            text = stringResource(R.string.onboarding_how_it_works),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
-        )
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        FeatureCard(
-            title = stringResource(R.string.onboarding_auto_title),
-            description = stringResource(R.string.onboarding_auto_desc)
-        )
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        FeatureCard(
-            title = stringResource(R.string.onboarding_manual_title),
-            description = stringResource(R.string.onboarding_manual_desc)
-        )
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        // Privacy
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-            ),
-            shape = RoundedCornerShape(16.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.onboarding_privacy_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(R.string.onboarding_privacy_desc),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PermissionsPage(
-    hasSmsPermission: Boolean,
-    hasNotificationPermission: Boolean,
-    onRequestPermissions: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        Text(
-            text = stringResource(R.string.onboarding_permissions_title),
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center
-        )
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        // Permissions list
-        PermissionItem(
-            text = stringResource(R.string.onboarding_permissions_sms),
-            granted = hasSmsPermission
-        )
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        PermissionItem(
-            text = stringResource(R.string.onboarding_permissions_notif),
-            granted = hasNotificationPermission
-        )
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        // Warning if missing permissions
-        if (!hasSmsPermission || !hasNotificationPermission) {
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            // Title
+            Text(
+                text = stringResource(R.string.onboarding_welcome_title),
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.onboarding_welcome_message),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            
+            Spacer(modifier = Modifier.height(40.dp))
+            
+            // How it works
+            Text(
+                text = stringResource(R.string.onboarding_how_it_works),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            FeatureCard(
+                title = stringResource(R.string.onboarding_auto_title),
+                description = stringResource(R.string.onboarding_auto_desc)
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            FeatureCard(
+                title = stringResource(R.string.onboarding_manual_title),
+                description = stringResource(R.string.onboarding_manual_desc)
+            )
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            // Privacy
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
                 ),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                Column(
+                    modifier = Modifier.padding(20.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Warning,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error
-                    )
                     Text(
-                        text = stringResource(R.string.onboarding_permissions_missing),
+                        text = stringResource(R.string.onboarding_privacy_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.onboarding_privacy_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Button(
-                onClick = onRequestPermissions,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.onboarding_grant_permissions))
-            }
         }
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        // Created by
+        Text(
+            text = stringResource(R.string.onboarding_created_by),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
     }
 }
 
 @Composable
-private fun ApprovedSendersPage(
+private fun PermissionsAndSendersPage(
+    hasSmsPermission: Boolean,
+    hasNotificationPermission: Boolean,
+    onRequestSms: () -> Unit,
+    onRequestNotifications: () -> Unit,
     strictModeEnabled: Boolean,
     onStrictModeChange: (Boolean) -> Unit
 ) {
@@ -357,13 +309,48 @@ private fun ApprovedSendersPage(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         
+        // Permissions Section
         Text(
-            text = stringResource(R.string.onboarding_approved_senders_title),
+            text = stringResource(R.string.onboarding_permissions_title),
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
         
         Spacer(modifier = Modifier.height(24.dp))
+        
+        // SMS Permission
+        PermissionItemWithButton(
+            text = stringResource(R.string.onboarding_permissions_sms),
+            granted = hasSmsPermission,
+            buttonText = stringResource(R.string.onboarding_grant_sms),
+            onGrantClick = onRequestSms
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Notification Permission
+        PermissionItemWithButton(
+            text = stringResource(R.string.onboarding_permissions_notif),
+            granted = hasNotificationPermission,
+            buttonText = stringResource(R.string.onboarding_grant_notifications),
+            onGrantClick = onRequestNotifications
+        )
+        
+        Spacer(modifier = Modifier.height(40.dp))
+        
+        HorizontalDivider()
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        // Approved Senders Section
+        Text(
+            text = stringResource(R.string.onboarding_approved_senders_title),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth()
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
         
         Text(
             text = stringResource(R.string.onboarding_approved_senders_desc),
@@ -372,13 +359,9 @@ private fun ApprovedSendersPage(
             modifier = Modifier.fillMaxWidth()
         )
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         
-        HorizontalDivider()
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        // Strict Mode Section
+        // Strict Mode Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -453,7 +436,12 @@ private fun FeatureCard(title: String, description: String) {
 }
 
 @Composable
-private fun PermissionItem(text: String, granted: Boolean) {
+private fun PermissionItemWithButton(
+    text: String, 
+    granted: Boolean,
+    buttonText: String,
+    onGrantClick: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -464,26 +452,43 @@ private fun PermissionItem(text: String, granted: Boolean) {
                 MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp)
         ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.weight(1f)
-            )
-            Icon(
-                imageVector = if (granted) Icons.Default.CheckCircle else Icons.Default.Warning,
-                contentDescription = null,
-                tint = if (granted) 
-                    MaterialTheme.colorScheme.primary 
-                else 
-                    MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = if (granted) Icons.Default.CheckCircle else Icons.Default.Warning,
+                    contentDescription = null,
+                    tint = if (granted) 
+                        MaterialTheme.colorScheme.primary 
+                    else 
+                        MaterialTheme.colorScheme.error
+                )
+            }
+            
+            if (!granted) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = onGrantClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(buttonText)
+                }
+            }
         }
     }
 }

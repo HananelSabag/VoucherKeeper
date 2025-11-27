@@ -89,18 +89,18 @@
     <string name="onboarding_manual_desc">הוסף שוברים ידנית או בדוק הודעות לא ודאיות.</string>
     <string name="onboarding_privacy_title">הפרטיות שלך חשובה לנו</string>
     <string name="onboarding_privacy_desc">אנו מעבדים רק טקסט SMS במקום במכשיר שלך. שום מידע לא עוזב את הטלפון.</string>
+    <string name="onboarding_created_by">נוצר על ידי חננאל סבג</string>
     <string name="onboarding_permissions_title">הרשאות שאנחנו צריכים</string>
     <string name="onboarding_permissions_sms">📱 SMS - לקריאת שוברים נכנסים</string>
     <string name="onboarding_permissions_notif">🔔 התראות - להתראה על שוברים חדשים</string>
-    <string name="onboarding_permissions_missing">⚠️ חסרות כמה הרשאות. אפשר אותן לפונקציונליות מלאה.</string>
-    <string name="onboarding_grant_permissions">אפשר הרשאות</string>
+    <string name="onboarding_grant_sms">אפשר הרשאת SMS</string>
+    <string name="onboarding_grant_notifications">אפשר התראות</string>
     <string name="onboarding_approved_senders_title">שולחים מאושרים (אופציונלי)</string>
     <string name="onboarding_approved_senders_desc">הוסף מספרי טלפון או שמות שמורים (\"שופרסל\", \"לאומי\"). שמירה אוטומטית מהם.</string>
     <string name="onboarding_strict_mode_title">🔒 מצב מוגבל</string>
     <string name="onboarding_strict_mode_desc">הפעל כדי לשמור רק משולחים מאושרים. כבה כדי לאפשר למנוע החכם לנתח הכל.</string>
     <string name="onboarding_strict_mode_enable">הפעל מצב מוגבל</string>
     <string name="onboarding_next">הבא</string>
-    <string name="onboarding_skip">דלג</string>
     <string name="onboarding_done">בואו נתחיל!</string>
     
     <!-- Permissions -->
