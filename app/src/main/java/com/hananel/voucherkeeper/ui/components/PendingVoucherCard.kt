@@ -231,18 +231,22 @@ fun PendingVoucherCard(
                                     )
                                 }
                             }
-                            IconButton(
+                            FilledTonalButton(
                                 onClick = {
                                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                     val clip = ClipData.newPlainText("Voucher Code", code)
                                     clipboard.setPrimaryClip(clip)
                                     Toast.makeText(context, context.getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
-                                }
+                                },
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                                colors = ButtonDefaults.filledTonalButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                )
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = stringResource(R.string.action_copy),
-                                    tint = MaterialTheme.colorScheme.tertiary
+                                Text(
+                                    text = "📋",
+                                    style = MaterialTheme.typography.titleMedium
                                 )
                             }
                         }
@@ -320,18 +324,20 @@ fun PendingVoucherCard(
                                 }
                                 
                                 // Copy URL
-                                IconButton(
+                                FilledTonalIconButton(
                                     onClick = {
                                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                         val clip = ClipData.newPlainText("Voucher URL", url)
                                         clipboard.setPrimaryClip(clip)
                                         Toast.makeText(context, context.getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
-                                    }
+                                    },
+                                    colors = IconButtonDefaults.filledTonalIconButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                                    )
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = stringResource(R.string.action_copy),
-                                        tint = MaterialTheme.colorScheme.tertiary
+                                    Text(
+                                        text = "📋",
+                                        style = MaterialTheme.typography.titleMedium
                                     )
                                 }
                                 
@@ -509,10 +515,9 @@ fun PendingVoucherCard(
                         showUrlDialog = false
                     }
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
+                    Text(
+                        text = "📋",
+                        style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(stringResource(R.string.action_copy))
