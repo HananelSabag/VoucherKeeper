@@ -41,7 +41,6 @@ fun AddVoucherScreen(
     var amount by remember { mutableStateOf("") }
     var voucherUrl by remember { mutableStateOf("") }
     var redeemCode by remember { mutableStateOf("") }
-    var senderPhone by remember { mutableStateOf("") }
     var showMerchantError by remember { mutableStateOf(false) }
     var showAccessPointError by remember { mutableStateOf(false) }
     var showParseSuccess by remember { mutableStateOf(false) }
@@ -169,7 +168,7 @@ fun AddVoucherScreen(
                 color = MaterialTheme.colorScheme.onSurface
             )
             
-            // Merchant name (required)
+            // Voucher Title (required) - replaces merchant name
             OutlinedTextField(
                 value = merchantName,
                 onValueChange = { 
@@ -177,11 +176,19 @@ fun AddVoucherScreen(
                     showMerchantError = false
                 },
                 label = { Text(stringResource(R.string.add_voucher_merchant) + " *") },
+                placeholder = { Text(stringResource(R.string.add_voucher_merchant_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = showMerchantError && merchantName.isBlank(),
-                supportingText = if (showMerchantError && merchantName.isBlank()) {
-                    { Text(stringResource(R.string.add_voucher_merchant_required)) }
-                } else null
+                supportingText = {
+                    Text(
+                        text = if (showMerchantError && merchantName.isBlank()) {
+                            stringResource(R.string.add_voucher_merchant_required)
+                        } else {
+                            "Card header - merchant, store, or description"
+                        },
+                        color = if (showMerchantError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             )
             
             // Amount (optional)
@@ -190,6 +197,7 @@ fun AddVoucherScreen(
                 onValueChange = { amount = it },
                 label = { Text(stringResource(R.string.add_voucher_amount_label)) },
                 placeholder = { Text("100 ₪") },
+                supportingText = { Text(stringResource(R.string.add_voucher_amount_hint)) },
                 modifier = Modifier.fillMaxWidth()
             )
             
@@ -200,18 +208,19 @@ fun AddVoucherScreen(
                     voucherUrl = it
                     showAccessPointError = false
                 },
-                label = { Text(stringResource(R.string.add_voucher_url_label) + " *") },
+                label = { Text(stringResource(R.string.add_voucher_url_label)) },
                 placeholder = { Text("https://...") },
+                supportingText = { Text(stringResource(R.string.add_voucher_url_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 isError = showAccessPointError && voucherUrl.isBlank() && redeemCode.isBlank()
             )
             
             Text(
-                text = "או",
-                style = MaterialTheme.typography.bodySmall,
+                text = "━━━━ OR ━━━━",
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier.padding(vertical = 8.dp)
             )
             
             // Redeem code (required - URL or code)
@@ -221,22 +230,20 @@ fun AddVoucherScreen(
                     redeemCode = it
                     showAccessPointError = false
                 },
-                label = { Text(stringResource(R.string.add_voucher_code_label) + " *") },
+                label = { Text(stringResource(R.string.add_voucher_code_label)) },
                 placeholder = { Text("ABC123XYZ") },
                 modifier = Modifier.fillMaxWidth(),
                 isError = showAccessPointError && voucherUrl.isBlank() && redeemCode.isBlank(),
-                supportingText = if (showAccessPointError && voucherUrl.isBlank() && redeemCode.isBlank()) {
-                    { Text(stringResource(R.string.add_voucher_access_point_required)) }
-                } else null
-            )
-            
-            // Sender phone (optional)
-            OutlinedTextField(
-                value = senderPhone,
-                onValueChange = { senderPhone = it },
-                label = { Text(stringResource(R.string.add_voucher_sender_label)) },
-                placeholder = { Text("0501234567") },
-                modifier = Modifier.fillMaxWidth()
+                supportingText = {
+                    Text(
+                        text = if (showAccessPointError && voucherUrl.isBlank() && redeemCode.isBlank()) {
+                            stringResource(R.string.add_voucher_access_point_required)
+                        } else {
+                            stringResource(R.string.add_voucher_code_hint)
+                        },
+                        color = if (showAccessPointError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             )
             
             Spacer(modifier = Modifier.weight(1f))
@@ -259,7 +266,7 @@ fun AddVoucherScreen(
                                 amount.trim().takeIf { it.isNotBlank() },
                                 voucherUrl.trim().takeIf { it.isNotBlank() },
                                 redeemCode.trim().takeIf { it.isNotBlank() },
-                                senderPhone.trim().takeIf { it.isNotBlank() }
+                                null // No phone for manual entry - it's trusted
                             )
                             onBack()
                         }

@@ -189,14 +189,20 @@
     <string name="add_voucher_parse_button">Extract Details</string>
     <string name="add_voucher_parse_success">Fields filled automatically! Review and save.</string>
     <string name="add_voucher_manual_section">Or enter manually:</string>
-    <string name="add_voucher_merchant">Merchant Name</string>
-    <string name="add_voucher_merchant_required">Merchant name is required</string>
-    <string name="add_voucher_amount_label">Amount (optional)</string>
-    <string name="add_voucher_url_label">Voucher URL</string>
-    <string name="add_voucher_code_label">Redemption Code</string>
-    <string name="add_voucher_access_point_required">URL or code is required</string>
-    <string name="add_voucher_sender_label">Sender Phone (optional)</string>
+    <string name="add_voucher_merchant">Voucher Title</string>
+    <string name="add_voucher_merchant_required">Title is required (displayed on card)</string>
+    <string name="add_voucher_merchant_hint">e.g., Shufersal, Terminal X, Roladin</string>
+    <string name="add_voucher_amount_label">💰 Amount (optional)</string>
+    <string name="add_voucher_amount_hint">Will show "Amount not found" if empty</string>
+    <string name="add_voucher_url_label">🔗 Voucher Link</string>
+    <string name="add_voucher_url_hint">The link to use/view the voucher</string>
+    <string name="add_voucher_code_label">🔑 Redemption Code</string>
+    <string name="add_voucher_code_hint">The code to redeem the voucher</string>
+    <string name="add_voucher_access_point_required">Must have link OR code (at least one!)</string>
     <string name="add_voucher_save">Save Voucher</string>
+    <string name="voucher_amount_not_found">Amount not found</string>
+    <string name="voucher_additional_info">%1$d more from this sender · Total: %2$s</string>
+    <string name="voucher_additional_info_no_amount">%1$d more from this sender · (amounts incomplete)</string>
     
     <!-- Content Descriptions (Accessibility) -->
     <string name="cd_voucher_card">Voucher card</string>
