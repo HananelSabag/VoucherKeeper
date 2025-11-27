@@ -181,7 +181,14 @@
     
     <!-- Add Voucher Screen -->
     <string name="add_voucher_title">הוסף שובר ידנית</string>
-    <string name="add_voucher_info">מלא פרטי שובר. שם עסק + קישור או קוד חובה.</string>
+    <string name="add_voucher_info">📝 חובה: שם עסק + קישור או קוד | 💰 אופציונלי: סכום</string>
+    <string name="add_voucher_smart_paste_title">✨ הדבקה חכמה</string>
+    <string name="add_voucher_smart_paste_desc">הדבק הודעת SMS ותן לאלגוריתם שלנו לחלץ את הפרטים אוטומטית!</string>
+    <string name="add_voucher_paste_message">הדבק הודעת SMS</string>
+    <string name="add_voucher_paste_placeholder">הדבק כאן את הודעת השובר שלך...</string>
+    <string name="add_voucher_parse_button">חלץ פרטים</string>
+    <string name="add_voucher_parse_success">השדות מולאו אוטומטית! בדוק ושמור.</string>
+    <string name="add_voucher_manual_section">או הזן ידנית:</string>
     <string name="add_voucher_merchant">שם העסק</string>
     <string name="add_voucher_merchant_required">שם העסק הוא שדה חובה</string>
     <string name="add_voucher_amount_label">סכום (אופציונלי)</string>

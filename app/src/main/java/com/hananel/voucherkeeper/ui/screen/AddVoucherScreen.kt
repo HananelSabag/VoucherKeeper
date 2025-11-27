@@ -2,17 +2,23 @@ package com.hananel.voucherkeeper.ui.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hananel.voucherkeeper.R
+import com.hananel.voucherkeeper.domain.parser.ParserEngine
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Screen for manually adding a voucher.
@@ -24,6 +30,13 @@ fun AddVoucherScreen(
     onSave: (String, String?, String?, String?, String?) -> Unit,
     onBack: () -> Unit
 ) {
+    // Get ParserEngine from DI
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val parserEngine = remember {
+        val appContext = context.applicationContext as? android.app.Application
+        com.hananel.voucherkeeper.domain.parser.ParserEngine()
+    }
+    var pastedMessage by remember { mutableStateOf("") }
     var merchantName by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     var voucherUrl by remember { mutableStateOf("") }
@@ -31,6 +44,7 @@ fun AddVoucherScreen(
     var senderPhone by remember { mutableStateOf("") }
     var showMerchantError by remember { mutableStateOf(false) }
     var showAccessPointError by remember { mutableStateOf(false) }
+    var showParseSuccess by remember { mutableStateOf(false) }
     
     Scaffold(
         topBar = {
@@ -67,6 +81,93 @@ fun AddVoucherScreen(
                     modifier = Modifier.padding(16.dp)
                 )
             }
+            
+            // Smart Paste Section
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = stringResource(R.string.add_voucher_smart_paste_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    
+                    Text(
+                        text = stringResource(R.string.add_voucher_smart_paste_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    
+                    OutlinedTextField(
+                        value = pastedMessage,
+                        onValueChange = { pastedMessage = it },
+                        label = { Text(stringResource(R.string.add_voucher_paste_message)) },
+                        placeholder = { Text(stringResource(R.string.add_voucher_paste_placeholder)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        minLines = 3,
+                        maxLines = 5
+                    )
+                    
+                    Button(
+                        onClick = {
+                            if (pastedMessage.isNotBlank()) {
+                                val extracted = parserEngine.extractFromText(pastedMessage)
+                                extracted.merchantName?.let { merchantName = it }
+                                extracted.amount?.let { amount = it }
+                                extracted.voucherUrl?.let { voucherUrl = it }
+                                extracted.redeemCode?.let { redeemCode = it }
+                                showParseSuccess = true
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = pastedMessage.isNotBlank()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.add_voucher_parse_button))
+                    }
+                    
+                    if (showParseSuccess) {
+                        Text(
+                            text = "✓ " + stringResource(R.string.add_voucher_parse_success),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+            
+            HorizontalDivider()
+            
+            Text(
+                text = stringResource(R.string.add_voucher_manual_section),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             
             // Merchant name (required)
             OutlinedTextField(

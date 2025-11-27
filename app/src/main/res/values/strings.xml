@@ -181,7 +181,14 @@
     
     <!-- Add Voucher Screen -->
     <string name="add_voucher_title">Add Voucher Manually</string>
-    <string name="add_voucher_info">Fill in voucher details. Merchant name + URL or code required.</string>
+    <string name="add_voucher_info">📝 Required: Merchant name + URL or code | 💰 Optional: Amount</string>
+    <string name="add_voucher_smart_paste_title">✨ Smart Paste</string>
+    <string name="add_voucher_smart_paste_desc">Paste an SMS message and let our algorithm extract the details automatically!</string>
+    <string name="add_voucher_paste_message">Paste SMS Message</string>
+    <string name="add_voucher_paste_placeholder">Paste your voucher SMS here...</string>
+    <string name="add_voucher_parse_button">Extract Details</string>
+    <string name="add_voucher_parse_success">Fields filled automatically! Review and save.</string>
+    <string name="add_voucher_manual_section">Or enter manually:</string>
     <string name="add_voucher_merchant">Merchant Name</string>
     <string name="add_voucher_merchant_required">Merchant name is required</string>
     <string name="add_voucher_amount_label">Amount (optional)</string>
