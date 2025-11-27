@@ -3,7 +3,9 @@ package com.hananel.voucherkeeper.ui.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -476,15 +478,46 @@ private fun AddSenderDialog(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditSenderDialog(
     sender: ApprovedSenderEntity,
     onDismiss: () -> Unit,
     onEdit: (ApprovedSenderEntity) -> Unit
 ) {
-    var phone by remember { mutableStateOf(sender.phone) }
-    var name by remember { mutableStateOf(sender.name ?: "") }
+    // Detect if existing is phone number (starts with +) or system name
+    val isPhoneNumber = sender.phone.startsWith("+")
+    
+    var phonePrefix by remember { 
+        mutableStateOf(
+            if (isPhoneNumber) {
+                sender.phone.substring(0, sender.phone.indexOfFirst { it.isDigit() } + 1)
+            } else {
+                "+972"
+            }
+        )
+    }
+    var phoneNumber by remember { 
+        mutableStateOf(
+            if (isPhoneNumber) {
+                sender.phone.substring(phonePrefix.length)
+            } else {
+                ""
+            }
+        )
+    }
+    var systemName by remember { mutableStateOf(if (!isPhoneNumber) sender.phone else "") }
+    var displayName by remember { mutableStateOf(sender.name ?: "") }
     var showError by remember { mutableStateOf(false) }
+    var expandedPrefixMenu by remember { mutableStateOf(false) }
+    
+    val prefixes = listOf(
+        "+972" to "🇮🇱 Israel",
+        "+1" to "🇺🇸 USA",
+        "+44" to "🇬🇧 UK",
+        "+33" to "🇫🇷 France",
+        "+49" to "🇩🇪 Germany"
+    )
     
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -497,37 +530,129 @@ private fun EditSenderDialog(
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
             ) {
-                // Phone/Sender field
+                // Section 1: Phone Number
+                Text(
+                    text = "📱 " + stringResource(R.string.sender_type_phone),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Prefix dropdown
+                    ExposedDropdownMenuBox(
+                        expanded = expandedPrefixMenu,
+                        onExpandedChange = { expandedPrefixMenu = it },
+                        modifier = Modifier.width(120.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = phonePrefix,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Prefix") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPrefixMenu) },
+                            modifier = Modifier.menuAnchor()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedPrefixMenu,
+                            onDismissRequest = { expandedPrefixMenu = false }
+                        ) {
+                            prefixes.forEach { (prefix, label) ->
+                                DropdownMenuItem(
+                                    text = { Text("$prefix $label") },
+                                    onClick = {
+                                        phonePrefix = prefix
+                                        expandedPrefixMenu = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    
+                    // Phone number input
+                    OutlinedTextField(
+                        value = phoneNumber,
+                        onValueChange = { input ->
+                            val cleaned = input.filter { it.isDigit() || it == '-' }
+                            phoneNumber = if (cleaned.startsWith("0") && phonePrefix.isNotEmpty()) {
+                                cleaned.drop(1)
+                            } else {
+                                cleaned
+                            }
+                            showError = false
+                        },
+                        label = { Text(stringResource(R.string.phone_number_label)) },
+                        placeholder = { Text("50-743-2177") },
+                        supportingText = { 
+                            Text(
+                                text = if (phoneNumber.startsWith("0")) {
+                                    "⚠️ Leading 0 will be removed"
+                                } else {
+                                    "Format: xx-xxx-xxxx"
+                                },
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        },
+                        isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                
+                // Section 2: System Name
+                Text(
+                    text = "🏢 " + stringResource(R.string.sender_type_system),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                
                 OutlinedTextField(
-                    value = phone,
+                    value = systemName,
                     onValueChange = { 
-                        phone = it
+                        systemName = it
                         showError = false
                     },
-                    label = { Text(stringResource(R.string.approved_senders_phone_hint) + " *") },
-                    placeholder = { Text(stringResource(R.string.approved_senders_phone_placeholder)) },
+                    label = { Text(stringResource(R.string.system_name_label)) },
+                    placeholder = { Text("Cibus, Shufersal, Terminal-X") },
                     supportingText = {
                         Text(
-                            text = stringResource(R.string.approved_sender_phone_hint),
+                            text = stringResource(R.string.system_name_hint),
                             style = MaterialTheme.typography.bodySmall
                         )
                     },
-                    isError = showError && phone.isBlank(),
+                    isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
-                // Name field (optional)
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                
+                // Section 3: Display Name
+                Text(
+                    text = "👤 " + stringResource(R.string.sender_display_name),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                
                 OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(stringResource(R.string.approved_senders_name_hint)) },
-                    placeholder = { Text(stringResource(R.string.approved_senders_name_placeholder)) },
+                    value = displayName,
+                    onValueChange = { displayName = it },
+                    label = { Text(stringResource(R.string.display_name_label)) },
+                    placeholder = { Text(stringResource(R.string.display_name_placeholder)) },
                     supportingText = {
                         Text(
-                            text = stringResource(R.string.approved_sender_name_optional),
+                            text = stringResource(R.string.display_name_hint),
                             style = MaterialTheme.typography.bodySmall
                         )
                     },
@@ -539,12 +664,21 @@ private fun EditSenderDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    if (phone.isBlank()) {
+                    val hasPhone = phoneNumber.isNotBlank()
+                    val hasSystemName = systemName.isNotBlank()
+                    
+                    if (!hasPhone && !hasSystemName) {
                         showError = true
                     } else {
+                        val identifier = if (hasPhone) {
+                            "$phonePrefix${phoneNumber.replace("-", "")}"
+                        } else {
+                            systemName.trim()
+                        }
+                        
                         val updatedSender = sender.copy(
-                            phone = phone.trim(),
-                            name = name.trim().takeIf { it.isNotBlank() }
+                            phone = identifier,
+                            name = displayName.trim().takeIf { it.isNotBlank() }
                         )
                         onEdit(updatedSender)
                     }
