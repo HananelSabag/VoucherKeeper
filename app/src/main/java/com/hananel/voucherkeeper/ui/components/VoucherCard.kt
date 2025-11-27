@@ -249,18 +249,19 @@ fun VoucherCard(
                                     )
                                 }
                             }
-                            IconButton(
+                            FilledTonalButton(
                                 onClick = {
                                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                     val clip = ClipData.newPlainText("Voucher Code", code)
                                     clipboard.setPrimaryClip(clip)
                                     Toast.makeText(context, context.getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
-                                }
+                                },
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add, // Using Add as copy icon
-                                    contentDescription = stringResource(R.string.action_copy),
-                                    tint = MaterialTheme.colorScheme.primary
+                                Text(
+                                    text = "📋",
+                                    style = MaterialTheme.typography.titleMedium
                                 )
                             }
                         }
@@ -335,18 +336,20 @@ fun VoucherCard(
                                 }
                                 
                                 // Copy URL
-                                IconButton(
+                                FilledTonalIconButton(
                                     onClick = {
                                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                         val clip = ClipData.newPlainText("Voucher URL", url)
                                         clipboard.setPrimaryClip(clip)
                                         Toast.makeText(context, context.getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
-                                    }
+                                    },
+                                    colors = IconButtonDefaults.filledTonalIconButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                                    )
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add, // Using Add as copy icon
-                                        contentDescription = stringResource(R.string.action_copy),
-                                        tint = MaterialTheme.colorScheme.secondary
+                                    Text(
+                                        text = "📋",
+                                        style = MaterialTheme.typography.titleMedium
                                     )
                                 }
                                 
@@ -470,10 +473,9 @@ fun VoucherCard(
                         showUrlDialog = false
                     }
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
+                    Text(
+                        text = "📋",
+                        style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(stringResource(R.string.action_copy))

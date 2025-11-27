@@ -357,29 +357,49 @@ private fun AddSenderDialog(
                         }
                     }
                     
-                    // Phone number input
+                    // Phone number input with smart 0 removal
                     OutlinedTextField(
                         value = phoneNumber,
                         onValueChange = { input ->
-                            // Smart formatting: remove leading 0 if prefix exists
-                            val cleaned = input.filter { it.isDigit() || it == '-' }
-                            phoneNumber = if (cleaned.startsWith("0") && phonePrefix.isNotEmpty()) {
-                                cleaned.drop(1) // Remove leading 0
+                            val cleaned = input.filter { it.isDigit() }
+                            
+                            // Smart 0 removal logic:
+                            // Israeli cellular: 050, 052, 053, 054, 055, 057, 058 (11 digits with 0)
+                            // Israeli landline: 02, 03, 04, 07, 08, 09 (10 digits, keep 0)
+                            // 077 is landline too!
+                            
+                            phoneNumber = if (cleaned.length == 11 && cleaned.startsWith("0")) {
+                                // Check if it's cellular (05X where X is digit)
+                                val isCellular = cleaned.startsWith("05") && 
+                                    cleaned.length > 2 && 
+                                    cleaned[2].isDigit() &&
+                                    cleaned[2] in listOf('0', '2', '3', '4', '5', '7', '8')
+                                
+                                if (isCellular) {
+                                    cleaned.drop(1) // Remove the leading 0
+                                } else {
+                                    cleaned // Keep 0 (landline like 077, 02, etc.)
+                                }
                             } else {
                                 cleaned
                             }
                             showError = false
                         },
                         label = { Text(stringResource(R.string.phone_number_label)) },
-                        placeholder = { Text("50-743-2177") },
+                        placeholder = { Text("50-743-2177 or 2-345-6789") },
                         supportingText = { 
                             Text(
-                                text = if (phoneNumber.startsWith("0")) {
-                                    "⚠️ Leading 0 will be removed"
-                                } else {
-                                    "Format: xx-xxx-xxxx"
+                                text = when {
+                                    phoneNumber.filter { it.isDigit() }.length == 11 && 
+                                    phoneNumber.startsWith("05") -> "⚠️ Cellular - 0 will be removed"
+                                    phoneNumber.startsWith("0") -> "✓ Landline - 0 kept"
+                                    else -> "Format: 50-XXX-XXXX (cellular) or 02-XXX-XXXX (landline)"
                                 },
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                color = when {
+                                    phoneNumber.startsWith("05") -> MaterialTheme.colorScheme.tertiary
+                                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                                }
                             )
                         },
                         isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
@@ -576,28 +596,48 @@ private fun EditSenderDialog(
                         }
                     }
                     
-                    // Phone number input
+                    // Phone number input with smart 0 removal
                     OutlinedTextField(
                         value = phoneNumber,
                         onValueChange = { input ->
-                            val cleaned = input.filter { it.isDigit() || it == '-' }
-                            phoneNumber = if (cleaned.startsWith("0") && phonePrefix.isNotEmpty()) {
-                                cleaned.drop(1)
+                            val cleaned = input.filter { it.isDigit() }
+                            
+                            // Smart 0 removal for Israeli numbers:
+                            // Cellular: 050/052/053/054/055/057/058 (11 digits, remove 0)
+                            // Landline: 02/03/04/07/08/09/077 (10 digits, KEEP 0)
+                            
+                            phoneNumber = if (cleaned.length == 11 && cleaned.startsWith("0")) {
+                                // Check if cellular prefix
+                                val isCellular = cleaned.startsWith("05") && 
+                                    cleaned.length > 2 && 
+                                    cleaned[2].isDigit() &&
+                                    cleaned[2] in listOf('0', '2', '3', '4', '5', '7', '8')
+                                
+                                if (isCellular) {
+                                    cleaned.drop(1) // Remove redundant 0
+                                } else {
+                                    cleaned // Keep 0 (it's part of landline)
+                                }
                             } else {
                                 cleaned
                             }
                             showError = false
                         },
                         label = { Text(stringResource(R.string.phone_number_label)) },
-                        placeholder = { Text("50-743-2177") },
+                        placeholder = { Text("50-743-2177 or 2-345-6789") },
                         supportingText = { 
                             Text(
-                                text = if (phoneNumber.startsWith("0")) {
-                                    "⚠️ Leading 0 will be removed"
-                                } else {
-                                    "Format: xx-xxx-xxxx"
+                                text = when {
+                                    phoneNumber.filter { it.isDigit() }.length == 11 && 
+                                    phoneNumber.startsWith("05") -> "⚠️ Cellular - 0 will be removed"
+                                    phoneNumber.startsWith("0") -> "✓ Landline - 0 kept"
+                                    else -> "Format: 50-XXX-XXXX (cellular) or 02-XXX-XXXX (landline)"
                                 },
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                color = when {
+                                    phoneNumber.startsWith("05") -> MaterialTheme.colorScheme.tertiary
+                                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                                }
                             )
                         },
                         isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
