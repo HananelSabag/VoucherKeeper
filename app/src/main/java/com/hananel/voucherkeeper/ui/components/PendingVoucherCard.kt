@@ -29,9 +29,9 @@ fun PendingVoucherCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = androidx.compose.ui.graphics.Color(0xFFFFF3E0) // Light orange
         )
     ) {
         Column(
@@ -66,9 +66,10 @@ fun PendingVoucherCard(
             // Amount (if available)
             voucher.amount?.let { amount ->
                 Text(
-                    text = stringResource(R.string.voucher_amount, amount),
+                    text = "💰 " + stringResource(R.string.voucher_amount, amount),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    color = androidx.compose.ui.graphics.Color(0xFFE65100), // Dark orange
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
@@ -76,8 +77,9 @@ fun PendingVoucherCard(
             // Redeem code (if available)
             voucher.redeemCode?.let { code ->
                 Text(
-                    text = stringResource(R.string.voucher_code, code),
-                    style = MaterialTheme.typography.bodyMedium
+                    text = "🔑 " + stringResource(R.string.voucher_code, code),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
@@ -85,9 +87,9 @@ fun PendingVoucherCard(
             // URL (if available)
             voucher.voucherUrl?.let { url ->
                 Text(
-                    text = stringResource(R.string.voucher_url),
+                    text = "🔗 " + stringResource(R.string.voucher_url),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = androidx.compose.ui.graphics.Color(0xFF1976D2) // Blue
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
