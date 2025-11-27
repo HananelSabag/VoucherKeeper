@@ -182,6 +182,18 @@
     <string name="voucher_code_label">קוד מימוש</string>
     <string name="voucher_url_label">קישור לשובר</string>
     
+    <!-- Add Sender Dialog -->
+    <string name="sender_type_phone">מספר טלפון (אפשרות 1)</string>
+    <string name="sender_type_system">שם מערכת (אפשרות 2)</string>
+    <string name="sender_display_name">שם תצוגה (אופציונלי)</string>
+    <string name="phone_number_label">מספר טלפון</string>
+    <string name="system_name_label">שם מהמערכת</string>
+    <string name="system_name_hint">השם שגוגל שמרה במרכזייה (למשל: Cibus, Shufersal, BankLeumi)</string>
+    <string name="display_name_label">שם ידידותי</string>
+    <string name="display_name_placeholder">שופרסל - כרטיסי מתנה</string>
+    <string name="display_name_hint">שם אופציונלי להצגה</string>
+    <string name="sender_validation_error">חובה להזין מספר טלפון או שם מערכת!</string>
+    
     <!-- Toast Messages -->
     <string name="toast_copied">הועתק ללוח</string>
     <string name="toast_approved">השובר אושר</string>

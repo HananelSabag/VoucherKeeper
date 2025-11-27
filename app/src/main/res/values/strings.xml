@@ -182,6 +182,18 @@
     <string name="voucher_code_label">Redemption Code</string>
     <string name="voucher_url_label">Voucher Link</string>
     
+    <!-- Add Sender Dialog -->
+    <string name="sender_type_phone">Phone Number (Option 1)</string>
+    <string name="sender_type_system">System Name (Option 2)</string>
+    <string name="sender_display_name">Display Name (Optional)</string>
+    <string name="phone_number_label">Phone Number</string>
+    <string name="system_name_label">System Name</string>
+    <string name="system_name_hint">Name from phone directory (e.g., Cibus, Shufersal, BankLeumi)</string>
+    <string name="display_name_label">Friendly Name</string>
+    <string name="display_name_placeholder">Shufersal Gift Cards</string>
+    <string name="display_name_hint">Optional friendly name for display</string>
+    <string name="sender_validation_error">Must provide EITHER phone number OR system name!</string>
+    
     <!-- Toast Messages -->
     <string name="toast_copied">Copied to clipboard</string>
     <string name="toast_approved">Voucher approved</string>
