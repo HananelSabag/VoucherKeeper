@@ -41,12 +41,13 @@ fun ApprovedSendersScreen(
                 title = { 
                     Text(
                         text = stringResource(R.string.approved_senders_title),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 actions = {
                     IconButton(onClick = onShowHelp) {
@@ -65,15 +66,19 @@ fun ApprovedSendersScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.approved_senders_add)
-                )
-            }
+                containerColor = MaterialTheme.colorScheme.primary,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text(stringResource(R.string.action_add_approved_sender))
+                }
+            )
         }
     ) { paddingValues ->
         if (approvedSenders.isEmpty()) {
@@ -222,9 +227,42 @@ private fun AddSenderDialog(
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.approved_senders_add)) },
+        title = { 
+            Text(
+                text = stringResource(R.string.approved_senders_add),
+                style = MaterialTheme.typography.titleLarge
+            ) 
+        },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Explanation card
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.approved_sender_explanation_title),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = stringResource(R.string.approved_sender_explanation_text),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
+                // Phone/Sender field
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { 
@@ -233,29 +271,36 @@ private fun AddSenderDialog(
                     },
                     label = { Text(stringResource(R.string.approved_senders_phone_hint) + " *") },
                     placeholder = { Text(stringResource(R.string.approved_senders_phone_placeholder)) },
+                    supportingText = {
+                        Text(
+                            text = stringResource(R.string.approved_sender_phone_hint),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
                     isError = showError && phone.isBlank(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
+                // Name field (optional)
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(stringResource(R.string.approved_senders_name_hint)) },
                     placeholder = { Text(stringResource(R.string.approved_senders_name_placeholder)) },
+                    supportingText = {
+                        Text(
+                            text = stringResource(R.string.approved_sender_name_optional),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
-                )
-                
-                Text(
-                    text = stringResource(R.string.approved_senders_tip),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         },
         confirmButton = {
-            TextButton(
+            Button(
                 onClick = {
                     if (phone.isBlank()) {
                         showError = true
@@ -264,7 +309,7 @@ private fun AddSenderDialog(
                     }
                 }
             ) {
-                Text(stringResource(R.string.dialog_confirm))
+                Text(stringResource(R.string.dialog_add))
             }
         },
         dismissButton = {

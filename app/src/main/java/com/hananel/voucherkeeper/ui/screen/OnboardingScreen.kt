@@ -642,14 +642,42 @@ private fun AddSenderOnboardingDialog(
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.onboarding_add_sender)) },
+        title = { 
+            Text(
+                text = stringResource(R.string.onboarding_add_sender),
+                style = MaterialTheme.typography.titleLarge
+            ) 
+        },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(
-                    text = stringResource(R.string.onboarding_approved_senders_desc),
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Explanation card
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.approved_sender_explanation_title),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = stringResource(R.string.approved_sender_explanation_text),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
                 
+                // Phone/Sender field
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { 
@@ -658,29 +686,36 @@ private fun AddSenderOnboardingDialog(
                     },
                     label = { Text(stringResource(R.string.approved_senders_phone_hint) + " *") },
                     placeholder = { Text(stringResource(R.string.approved_senders_phone_placeholder)) },
+                    supportingText = {
+                        Text(
+                            text = stringResource(R.string.approved_sender_phone_hint),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
                     isError = showError && phone.isBlank(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
                 
+                // Name field (optional)
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(stringResource(R.string.approved_senders_name_hint)) },
                     placeholder = { Text(stringResource(R.string.approved_senders_name_placeholder)) },
+                    supportingText = {
+                        Text(
+                            text = stringResource(R.string.approved_sender_name_optional),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
-                )
-                
-                Text(
-                    text = stringResource(R.string.approved_senders_tip),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         },
         confirmButton = {
-            TextButton(
+            Button(
                 onClick = {
                     if (phone.isBlank()) {
                         showError = true
@@ -689,7 +724,7 @@ private fun AddSenderOnboardingDialog(
                     }
                 }
             ) {
-                Text(stringResource(R.string.dialog_confirm))
+                Text(stringResource(R.string.dialog_add))
             }
         },
         dismissButton = {

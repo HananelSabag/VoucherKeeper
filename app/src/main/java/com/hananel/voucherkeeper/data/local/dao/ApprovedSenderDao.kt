@@ -22,6 +22,9 @@ interface ApprovedSenderDao {
     @Query("SELECT EXISTS(SELECT 1 FROM approved_senders WHERE LOWER(name) = LOWER(:name) OR phone = :name)")
     suspend fun isApprovedSenderByNameOrPhone(name: String): Boolean
     
+    @Query("SELECT * FROM approved_senders")
+    suspend fun getAllApprovedSendersList(): List<ApprovedSenderEntity>
+    
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSender(sender: ApprovedSenderEntity)
     

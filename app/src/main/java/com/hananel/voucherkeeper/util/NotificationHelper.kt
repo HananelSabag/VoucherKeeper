@@ -2,9 +2,12 @@ package com.hananel.voucherkeeper.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.hananel.voucherkeeper.MainActivity
 import com.hananel.voucherkeeper.R
 import com.hananel.voucherkeeper.data.preferences.PreferencesManager
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -66,7 +69,7 @@ class NotificationHelper @Inject constructor(
     /**
      * Send notification for a new approved voucher.
      */
-    fun notifyVoucherApproved(merchantName: String?) {
+    fun notifyVoucherApproved(merchantName: String?, senderName: String? = null, senderPhone: String? = null) {
         // Check permission
         if (!PermissionHandler.hasNotificationPermission(context)) {
             return
@@ -78,10 +81,30 @@ class NotificationHelper @Inject constructor(
             return
         }
         
+        // Determine display name: merchantName > senderName > phone > default
+        val displayName = merchantName 
+            ?: senderName 
+            ?: senderPhone?.let { "שובר חדש" } 
+            ?: context.getString(R.string.notification_voucher_approved_title)
+        
         val title = context.getString(R.string.notification_voucher_approved_title)
-        val message = context.getString(
-            R.string.notification_voucher_approved_message,
-            merchantName ?: "Unknown"
+        val message = if (merchantName != null || senderName != null) {
+            context.getString(R.string.notification_voucher_approved_message, displayName)
+        } else {
+            "שובר חדש נוסף לרשימה המאושרים"
+        }
+        
+        // Create intent to open app on Approved screen
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("navigate_to", "approved")
+        }
+        
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            NOTIFICATION_ID_VOUCHER,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
         val notification = NotificationCompat.Builder(context, CHANNEL_VOUCHERS)
@@ -90,6 +113,8 @@ class NotificationHelper @Inject constructor(
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setContentIntent(pendingIntent)
             .build()
         
         notificationManager.notify(NOTIFICATION_ID_VOUCHER, notification)
@@ -113,12 +138,27 @@ class NotificationHelper @Inject constructor(
         val title = context.getString(R.string.notification_pending_title)
         val message = context.getString(R.string.notification_pending_message)
         
+        // Create intent to open app on Pending screen
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("navigate_to", "pending")
+        }
+        
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            NOTIFICATION_ID_PENDING,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
         val notification = NotificationCompat.Builder(context, CHANNEL_PENDING)
             .setSmallIcon(R.drawable.app_logo)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setContentIntent(pendingIntent)
             .build()
         
         notificationManager.notify(NOTIFICATION_ID_PENDING, notification)

@@ -1,5 +1,6 @@
 package com.hananel.voucherkeeper.data.repository
 
+import android.util.Log
 import com.hananel.voucherkeeper.data.local.dao.ApprovedSenderDao
 import com.hananel.voucherkeeper.data.local.dao.TrustedDomainDao
 import com.hananel.voucherkeeper.data.local.dao.VoucherDao
@@ -8,6 +9,7 @@ import com.hananel.voucherkeeper.domain.parser.ExtractedData
 import com.hananel.voucherkeeper.domain.parser.ParserEngine
 import com.hananel.voucherkeeper.domain.parser.SMSMessage
 import com.hananel.voucherkeeper.domain.parser.VoucherDecision
+import com.hananel.voucherkeeper.util.PhoneNumberHelper
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,6 +25,10 @@ class VoucherRepository @Inject constructor(
     private val trustedDomainDao: TrustedDomainDao,
     private val parserEngine: ParserEngine
 ) {
+    
+    companion object {
+        private const val TAG = "VoucherKeeper_Repo"
+    }
     
     /**
      * Get all approved vouchers (Flow for reactive UI).
@@ -52,31 +58,68 @@ class VoucherRepository @Inject constructor(
      * @return The classification decision
      */
     suspend fun processSmsMessage(smsMessage: SMSMessage): VoucherDecision {
+        Log.d(TAG, "=== VOUCHER REPOSITORY - Processing SMS ===")
+        Log.d(TAG, "Sender: ${smsMessage.senderPhone}")
+        
+        // Normalize incoming phone number
+        val normalizedIncomingPhone = PhoneNumberHelper.normalize(smsMessage.senderPhone)
+        Log.d(TAG, "Normalized incoming phone: $normalizedIncomingPhone")
+        
         // Check if sender is approved (by phone or by saved name)
-        val isApprovedSender = if (smsMessage.senderName != null) {
-            // Check by name first (for saved contacts like "Shufersal", "Leumi")
+        // For phone matching, we normalize and compare all approved senders
+        val allApprovedSenders = approvedSenderDao.getAllApprovedSendersList()
+        val matchedSender = allApprovedSenders.firstOrNull { sender ->
+            PhoneNumberHelper.areEqual(sender.phone, smsMessage.senderPhone)
+        }
+        val isApprovedByPhone = matchedSender != null
+        
+        // Check by display name (exact match for system names like "Shufersal")
+        val isApprovedByName = if (smsMessage.senderName != null) {
             approvedSenderDao.isApprovedSenderByNameOrPhone(smsMessage.senderName)
         } else {
-            // Check by phone number
-            approvedSenderDao.isApprovedSender(smsMessage.senderPhone)
+            false
         }
+        
+        val isApprovedSender = isApprovedByPhone || isApprovedByName
+        
+        // Get display name from approved sender if exists
+        val displayName = matchedSender?.name ?: smsMessage.senderName
+        
+        Log.d(TAG, "Sender check:")
+        Log.d(TAG, "  - Phone: ${smsMessage.senderPhone} → Approved: $isApprovedByPhone")
+        Log.d(TAG, "  - Name: ${smsMessage.senderName ?: "(none)"} → Approved: $isApprovedByName")
+        Log.d(TAG, "  - Display name from approved sender: ${displayName ?: "(none)"}")
+        Log.d(TAG, "  - Final: $isApprovedSender")
         
         // Get custom trusted domains
         val customDomains = trustedDomainDao.getAllDomainsList()
+        Log.d(TAG, "Custom domains count: ${customDomains.size}")
         
-        // Run parser engine
-        val decision = parserEngine.process(smsMessage, isApprovedSender, customDomains)
+        // Run parser engine with updated SMS message (with display name if found)
+        val updatedSmsMessage = if (displayName != null && displayName != smsMessage.senderName) {
+            smsMessage.copy(senderName = displayName)
+        } else {
+            smsMessage
+        }
         
-        // Store voucher if approved or pending
+        Log.d(TAG, "Running parser engine...")
+        val decision = parserEngine.process(updatedSmsMessage, isApprovedSender, customDomains)
+        Log.d(TAG, "Parser decision: ${decision.javaClass.simpleName}")
+        
+        // Store voucher if approved or pending (use updatedSmsMessage with display name)
         when (decision) {
             is VoucherDecision.Approved -> {
-                insertVoucherFromDecision(smsMessage, decision.extractedData, "approved")
+                Log.d(TAG, "Storing APPROVED voucher to database...")
+                insertVoucherFromDecision(updatedSmsMessage, decision.extractedData, "approved")
+                Log.d(TAG, "✓ Voucher saved successfully")
             }
             is VoucherDecision.Pending -> {
-                insertVoucherFromDecision(smsMessage, decision.extractedData, "pending")
+                Log.d(TAG, "Storing PENDING voucher to database...")
+                insertVoucherFromDecision(updatedSmsMessage, decision.extractedData, "pending")
+                Log.d(TAG, "✓ Pending voucher saved successfully")
             }
             is VoucherDecision.Discard -> {
-                // Do nothing - message rejected
+                Log.d(TAG, "Message discarded - not saving to database")
             }
         }
         
@@ -155,6 +198,17 @@ class VoucherRepository @Inject constructor(
             timestamp = System.currentTimeMillis()
         )
         voucherDao.insertVoucher(voucher)
+    }
+    
+    /**
+     * Update voucher sender name.
+     */
+    suspend fun updateVoucherName(voucherId: Long, newName: String) {
+        val voucher = voucherDao.getVoucherById(voucherId)
+        voucher?.let {
+            val updated = it.copy(senderName = newName.takeIf { name -> name.isNotBlank() })
+            voucherDao.updateVoucher(updated)
+        }
     }
 }
 

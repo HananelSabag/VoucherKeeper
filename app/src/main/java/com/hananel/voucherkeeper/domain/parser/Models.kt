@@ -3,14 +3,15 @@ package com.hananel.voucherkeeper.domain.parser
 /**
  * Represents an incoming SMS message to be parsed.
  * 
- * @property senderPhone Sender's phone number
- * @property senderName Sender's name (if available from contacts)
+ * @property senderPhone Actual phone number (originatingAddress) - ALWAYS the real number
+ * @property senderName Display name (displayOriginatingAddress) if different from phone -
+ *                      e.g., "Shufersal", "Terminal X" for saved contact names in system
  * @property bodyText SMS message body
  * @property timestamp Message reception time (epoch millis)
  */
 data class SMSMessage(
-    val senderPhone: String,
-    val senderName: String? = null,
+    val senderPhone: String,        // Real phone number (e.g., "+972501234567")
+    val senderName: String? = null, // Saved contact name (e.g., "Shufersal") or null
     val bodyText: String,
     val timestamp: Long
 )

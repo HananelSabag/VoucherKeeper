@@ -60,5 +60,14 @@ class ApprovedVouchersViewModel @Inject constructor(
             )
         }
     }
+    
+    /**
+     * Update voucher sender name.
+     */
+    fun updateVoucherName(voucherId: Long, newName: String) {
+        viewModelScope.launch {
+            voucherRepository.updateVoucherName(voucherId, newName)
+        }
+    }
 }
 
