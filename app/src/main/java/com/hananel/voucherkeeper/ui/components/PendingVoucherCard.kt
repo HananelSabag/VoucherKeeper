@@ -11,11 +11,14 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -41,10 +44,12 @@ fun PendingVoucherCard(
     onApprove: (Long) -> Unit,
     onReject: (Long) -> Unit,
     onApproveWithSender: (VoucherEntity) -> Unit,
+    onUpdateVoucher: (id: Long, name: String?, amount: String?, merchant: String?, url: String?, code: String?) -> Unit = { _, _, _, _, _, _ -> },
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     var showRejectDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
     
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -59,7 +64,7 @@ fun PendingVoucherCard(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
-            // Header: Sender Info with Pending Badge
+            // Header: Sender Info with Edit + Pending Badge
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -121,28 +126,47 @@ fun PendingVoucherCard(
                     }
                 }
                 
-                // Pending badge
-                Surface(
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                // Edit button + Pending badge
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    // Edit button
+                    IconButton(
+                        onClick = { showEditDialog = true },
+                        modifier = Modifier.size(32.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Warning,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.tertiary
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = stringResource(R.string.action_edit),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(18.dp)
                         )
-                        Text(
-                            text = stringResource(R.string.nav_pending),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                        )
+                    }
+                    
+                    // Pending badge
+                    Surface(
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Warning,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp),
+                                tint = MaterialTheme.colorScheme.tertiary
+                            )
+                            Text(
+                                text = stringResource(R.string.nav_pending),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
@@ -318,6 +342,25 @@ fun PendingVoucherCard(
             }
         )
     }
+    
+    // Edit voucher dialog - fix parser errors before approving!
+    if (showEditDialog) {
+        EditPendingVoucherDialog(
+            voucher = voucher,
+            onDismiss = { showEditDialog = false },
+            onConfirm = { newName, newAmount, newMerchant, newUrl, newCode ->
+                onUpdateVoucher(
+                    voucher.id,
+                    newName.takeIf { it.isNotBlank() },
+                    newAmount.takeIf { it.isNotBlank() },
+                    newMerchant.takeIf { it.isNotBlank() },
+                    newUrl.takeIf { it.isNotBlank() },
+                    newCode.takeIf { it.isNotBlank() }
+                )
+                showEditDialog = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -349,5 +392,145 @@ private fun PendingDetailRow(
 private fun formatTimestamp(timestamp: Long): String {
     val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
     return sdf.format(Date(timestamp))
+}
+
+@Composable
+private fun EditPendingVoucherDialog(
+    voucher: VoucherEntity,
+    onDismiss: () -> Unit,
+    onConfirm: (name: String, amount: String, merchant: String, url: String, code: String) -> Unit
+) {
+    var name by remember { mutableStateOf(voucher.senderName ?: "") }
+    var amount by remember { mutableStateOf(voucher.amount ?: "") }
+    var merchantName by remember { mutableStateOf(voucher.merchantName ?: "") }
+    var voucherUrl by remember { mutableStateOf(voucher.voucherUrl ?: "") }
+    var redeemCode by remember { mutableStateOf(voucher.redeemCode ?: "") }
+    var showError by remember { mutableStateOf(false) }
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { 
+            Text(
+                text = stringResource(R.string.pending_edit_dialog_title),
+                style = MaterialTheme.typography.titleLarge
+            ) 
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                // Warning banner
+                Surface(
+                    color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Warning,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.pending_edit_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
+                // Display name
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(R.string.voucher_edit_name_hint)) },
+                    placeholder = { Text("Friendly name...") },
+                    supportingText = { Text("Optional display name") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                HorizontalDivider()
+                
+                // Merchant/Title (required)
+                OutlinedTextField(
+                    value = merchantName,
+                    onValueChange = { 
+                        merchantName = it
+                        showError = false
+                    },
+                    label = { Text(stringResource(R.string.add_voucher_merchant) + " *") },
+                    placeholder = { Text("Shufersal, Terminal X...") },
+                    supportingText = { Text("Card title") },
+                    isError = showError && merchantName.isBlank(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                // Amount (optional)
+                OutlinedTextField(
+                    value = amount,
+                    onValueChange = { amount = it },
+                    label = { Text(stringResource(R.string.add_voucher_amount_label)) },
+                    placeholder = { Text("100 ₪") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                HorizontalDivider()
+                
+                // URL
+                OutlinedTextField(
+                    value = voucherUrl,
+                    onValueChange = { voucherUrl = it },
+                    label = { Text(stringResource(R.string.add_voucher_url_label)) },
+                    placeholder = { Text("https://...") },
+                    singleLine = false,
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                // Redeem Code
+                OutlinedTextField(
+                    value = redeemCode,
+                    onValueChange = { redeemCode = it },
+                    label = { Text(stringResource(R.string.add_voucher_code_label)) },
+                    placeholder = { Text("ABC123XYZ") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (merchantName.isBlank()) {
+                        showError = true
+                    } else {
+                        onConfirm(
+                            name.trim(),
+                            amount.trim(),
+                            merchantName.trim(),
+                            voucherUrl.trim(),
+                            redeemCode.trim()
+                        )
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.dialog_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.dialog_cancel))
+            }
+        }
+    )
 }
 

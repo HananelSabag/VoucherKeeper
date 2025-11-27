@@ -30,6 +30,10 @@
     <string name="voucher_manual_entry">Manual Entry</string>
     <string name="voucher_edit_name">Edit Name</string>
     <string name="voucher_edit_dialog_title">Edit Voucher Details</string>
+    <string name="voucher_edit_full_dialog_title">Edit Voucher - Full Control</string>
+    <string name="voucher_edit_full_hint">Fix any parsing errors or update any field</string>
+    <string name="pending_edit_dialog_title">Fix Parsing Errors</string>
+    <string name="pending_edit_hint">Our parser may have made mistakes - fix them before approving!</string>
     <string name="voucher_edit_name_dialog_title">Edit Sender Name</string>
     <string name="voucher_edit_name_hint">Friendly display name</string>
     <string name="voucher_no_name">Unknown Sender</string>

@@ -78,5 +78,21 @@ class ApprovedVouchersViewModel @Inject constructor(
             voucherRepository.updateVoucherAmount(voucherId, newAmount)
         }
     }
+    
+    /**
+     * Update voucher full details.
+     */
+    fun updateVoucher(
+        voucherId: Long,
+        newName: String?,
+        newAmount: String?,
+        newMerchant: String?,
+        newUrl: String?,
+        newCode: String?
+    ) {
+        viewModelScope.launch {
+            voucherRepository.updateVoucher(voucherId, newName, newAmount, newMerchant, newUrl, newCode)
+        }
+    }
 }
 

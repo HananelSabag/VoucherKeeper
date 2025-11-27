@@ -63,5 +63,21 @@ class PendingReviewViewModel @Inject constructor(
             )
         }
     }
+    
+    /**
+     * Update voucher - fix parsing errors before approval.
+     */
+    fun updateVoucher(
+        voucherId: Long,
+        newName: String?,
+        newAmount: String?,
+        newMerchant: String?,
+        newUrl: String?,
+        newCode: String?
+    ) {
+        viewModelScope.launch {
+            voucherRepository.updateVoucher(voucherId, newName, newAmount, newMerchant, newUrl, newCode)
+        }
+    }
 }
 

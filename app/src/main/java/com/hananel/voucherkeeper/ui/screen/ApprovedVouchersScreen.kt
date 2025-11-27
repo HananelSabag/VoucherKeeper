@@ -175,6 +175,9 @@ fun ApprovedVouchersScreen(
                         onDelete = { viewModel.deleteVoucher(it) },
                         onUpdateName = { id, name -> viewModel.updateVoucherName(id, name) },
                         onUpdateAmount = { id, amount -> viewModel.updateVoucherAmount(id, amount) },
+                        onUpdateVoucher = { id: Long, name: String?, amount: String?, merchant: String?, url: String?, code: String? -> 
+                            viewModel.updateVoucher(id, name, amount, merchant, url, code) 
+                        },
                         otherVouchersCount = otherVouchersCount,
                         totalAmount = totalAmount
                     )
