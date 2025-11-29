@@ -64,10 +64,6 @@ class VoucherRepository @Inject constructor(
         Log.d(TAG, "=== VOUCHER REPOSITORY - Processing SMS ===")
         Log.d(TAG, "Sender: ${smsMessage.senderPhone}")
         
-        // Check strict mode setting
-        val strictModeEnabled = preferencesManager.strictModeFlow.first()
-        Log.d(TAG, "Strict Mode: ${if (strictModeEnabled) "ENABLED" else "DISABLED"}")
-        
         // Normalize incoming phone number
         val normalizedIncomingPhone = PhoneNumberHelper.normalize(smsMessage.senderPhone)
         Log.d(TAG, "Normalized incoming phone: $normalizedIncomingPhone")
@@ -98,9 +94,13 @@ class VoucherRepository @Inject constructor(
         Log.d(TAG, "  - Display name from approved sender: ${displayName ?: "(none)"}")
         Log.d(TAG, "  - Final: $isApprovedSender")
         
-        // 🔒 STRICT MODE CHECK: If enabled and sender not approved → REJECT immediately!
-        if (strictModeEnabled && !isApprovedSender) {
-            Log.d(TAG, "🔒 STRICT MODE - Sender NOT approved → DISCARDING message")
+        // Check Strict Mode
+        val strictMode = preferencesManager.strictModeFlow.first()
+        Log.d(TAG, "Strict Mode: $strictMode")
+        
+        // CRITICAL: If Strict Mode is enabled and sender is NOT approved → Reject immediately!
+        if (strictMode && !isApprovedSender) {
+            Log.d(TAG, "🔒 STRICT MODE ACTIVE - Sender not approved → DISCARD")
             return VoucherDecision.Discard
         }
         
