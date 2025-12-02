@@ -93,7 +93,7 @@ fun ApprovedVouchersScreen(
                 }
             )
         }
-        ) { paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -115,19 +115,19 @@ fun ApprovedVouchersScreen(
                         Row(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = stringResource(R.string.voucher_counter_label),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.voucher_counter_label),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                            Text(
-                                text = vouchers.size.toString(),
+                    )
+                    Text(
+                        text = vouchers.size.toString(),
                                 style = MaterialTheme.typography.labelLarge,
-                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.secondary
-                            )
+                    )
                         }
                     }
                 }

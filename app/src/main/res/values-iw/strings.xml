@@ -233,9 +233,9 @@
     
     <!-- Data Export -->
     <string name="export_section_title">ניהול נתונים</string>
-    <string name="export_csv_button">ייצא שוברים ל-CSV</string>
-    <string name="export_csv_description">ייצא את כל השוברים המאושרים לקובץ אקסל</string>
-    <string name="export_success">%1$d שוברים יוצאו בהצלחה!</string>
+    <string name="export_pdf_button">ייצא שוברים ל-PDF</string>
+    <string name="export_pdf_description">צור דו״ח PDF מעוצב של השוברים שלך</string>
+    <string name="export_success">הדו״ח נוצר בהצלחה!</string>
     <string name="export_empty">אין שוברים לייצוא</string>
     <string name="export_error">הייצוא נכשל. נסה שוב.</string>
     

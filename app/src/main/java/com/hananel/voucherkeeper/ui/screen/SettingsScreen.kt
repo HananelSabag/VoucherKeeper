@@ -185,21 +185,20 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.primary
             )
             
-            // Export CSV Button
+            // Export PDF Button
             Button(
                 onClick = {
                     scope.launch {
                         isExporting = true
-                        val csvFile = viewModel.exportVouchersToCSV(context)
+                        val pdfFile = viewModel.exportVouchersToPDF(context)
                         isExporting = false
                         
-                        if (csvFile != null) {
+                        if (pdfFile != null) {
                             // Show success message
-                            val voucherCount = csvFile.readLines().size - 2 // Excluding header and BOM
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.export_success, voucherCount),
-                                Toast.LENGTH_LONG
+                                context.getString(R.string.export_success, pdfFile.name.substringBefore(".")),
+                                Toast.LENGTH_SHORT
                             ).show()
                             
                             // Open share sheet to let user choose how to share/open the file
@@ -207,10 +206,10 @@ fun SettingsScreen(
                                 val uri = FileProvider.getUriForFile(
                                     context,
                                     "${context.packageName}.fileprovider",
-                                    csvFile
+                                    pdfFile
                                 )
                                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                    type = "text/csv"
+                                    type = "application/pdf"
                                     putExtra(Intent.EXTRA_STREAM, uri)
                                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                 }
@@ -218,7 +217,7 @@ fun SettingsScreen(
                             } catch (e: Exception) {
                                 Toast.makeText(
                                     context,
-                                    "File saved: ${csvFile.absolutePath}",
+                                    "File saved: ${pdfFile.absolutePath}",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
@@ -243,19 +242,16 @@ fun SettingsScreen(
                         strokeWidth = 2.dp
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                } else {
-                    Text(
-                        text = "📄",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(stringResource(R.string.export_csv_button))
+                Text(
+                    text = "⬇️ ",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(stringResource(R.string.export_pdf_button))
             }
             
             Text(
-                text = stringResource(R.string.export_csv_description),
+                text = stringResource(R.string.export_pdf_description),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

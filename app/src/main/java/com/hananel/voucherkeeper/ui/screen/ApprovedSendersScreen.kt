@@ -356,9 +356,9 @@ private fun AddSenderDialog(
                     
                     // Force LTR for phone number field
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                        OutlinedTextField(
-                            value = phoneNumber,
-                            onValueChange = { input ->
+                    OutlinedTextField(
+                        value = phoneNumber,
+                        onValueChange = { input ->
                                 // Handle pasted Israeli number starting with 0
                                 val cleaned = input.filter { it.isDigit() }
                                 phoneNumber = if (cleaned.startsWith("0") && cleaned.length >= 9) {
@@ -367,8 +367,8 @@ private fun AddSenderDialog(
                                 } else {
                                     cleaned
                                 }
-                                showError = false
-                            },
+                            showError = false
+                        },
                             placeholder = { 
                                 Text(
                                     "050-999-9999, 02-999-9999",
@@ -377,11 +377,11 @@ private fun AddSenderDialog(
                                     )
                                 )
                             },
-                            enabled = systemName.isBlank(),
-                            isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
-                            singleLine = true,
-                            modifier = Modifier.weight(1f)
-                        )
+                        enabled = systemName.isBlank(),
+                        isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
                     }
                 }
                 
@@ -586,9 +586,9 @@ private fun EditSenderDialog(
                     
                     // Force LTR for phone number field
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                        OutlinedTextField(
-                            value = phoneNumber,
-                            onValueChange = { input ->
+                    OutlinedTextField(
+                        value = phoneNumber,
+                        onValueChange = { input ->
                                 // Handle pasted Israeli number starting with 0
                                 val cleaned = input.filter { it.isDigit() }
                                 phoneNumber = if (cleaned.startsWith("0") && cleaned.length >= 9) {
@@ -597,8 +597,8 @@ private fun EditSenderDialog(
                                 } else {
                                     cleaned
                                 }
-                                showError = false
-                            },
+                            showError = false
+                        },
                             placeholder = { 
                                 Text(
                                     "050-999-9999, 02-999-9999",
@@ -607,11 +607,11 @@ private fun EditSenderDialog(
                                     )
                                 )
                             },
-                            enabled = systemName.isBlank(),
-                            isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
-                            singleLine = true,
-                            modifier = Modifier.weight(1f)
-                        )
+                        enabled = systemName.isBlank(),
+                        isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
                     }
                 }
                 

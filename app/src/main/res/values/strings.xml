@@ -233,9 +233,9 @@
     
     <!-- Data Export -->
     <string name="export_section_title">Data Management</string>
-    <string name="export_csv_button">Export Vouchers to CSV</string>
-    <string name="export_csv_description">Export all approved vouchers to a spreadsheet file</string>
-    <string name="export_success">Exported %1$d vouchers successfully!</string>
+    <string name="export_pdf_button">Export Vouchers to PDF</string>
+    <string name="export_pdf_description">Generate a beautifully formatted PDF report of your vouchers</string>
+    <string name="export_success">Report created successfully!</string>
     <string name="export_empty">No vouchers to export</string>
     <string name="export_error">Export failed. Please try again.</string>
     

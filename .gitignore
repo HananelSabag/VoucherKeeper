@@ -17,3 +17,7 @@ local.properties
 # Keystore files - NEVER commit these!
 *.jks
 *.keystore
+KEYSTORE_INFO.txt
+
+# Release artifacts - contains signed AAB and keystore
+/release

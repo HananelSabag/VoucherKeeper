@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -111,8 +112,10 @@ fun PendingVoucherCard(
                     }
                     
                     Column(modifier = Modifier.weight(1f)) {
+                        // Main title: merchantName (voucher title) or senderName or phone
                         Text(
-                            text = voucher.senderName 
+                            text = voucher.merchantName 
+                                ?: voucher.senderName 
                                 ?: voucher.senderPhone.takeIf { it.isNotBlank() }
                                 ?: stringResource(R.string.voucher_no_name),
                             style = MaterialTheme.typography.titleLarge,
@@ -122,19 +125,21 @@ fun PendingVoucherCard(
                             color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                         
-                        if (voucher.senderName != null && voucher.senderPhone.isNotBlank()) {
+                        // Subtitle: sender info (show if different from title)
+                        val senderInfo = voucher.senderName ?: voucher.senderPhone.takeIf { it.isNotBlank() }
+                        if (senderInfo != null && senderInfo != voucher.merchantName) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Filled.Phone,
+                                    imageVector = if (voucher.senderName != null) Icons.Filled.Person else Icons.Filled.Phone,
                                     contentDescription = null,
                                     modifier = Modifier.size(14.dp),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    text = voucher.senderPhone,
+                                    text = senderInfo,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     maxLines = 1,
@@ -173,27 +178,27 @@ fun PendingVoucherCard(
                             )
                         ) + fadeIn()
                     ) {
-                        Surface(
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                    Surface(
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Warning,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(14.dp),
-                                    tint = MaterialTheme.colorScheme.tertiary
-                                )
-                                Text(
-                                    text = stringResource(R.string.nav_pending),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.tertiary,
-                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                                )
+                            Icon(
+                                imageVector = Icons.Filled.Warning,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp),
+                                tint = MaterialTheme.colorScheme.tertiary
+                            )
+                            Text(
+                                text = stringResource(R.string.nav_pending),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                            )
                             }
                         }
                     }
