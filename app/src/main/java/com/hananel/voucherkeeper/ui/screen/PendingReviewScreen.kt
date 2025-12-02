@@ -117,19 +117,19 @@ fun PendingReviewScreen(
             }
             
             // Content
-            if (vouchers.isEmpty()) {
+        if (vouchers.isEmpty()) {
             EmptyState(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
             )
-            } else {
-                LazyColumn(
-                    modifier = Modifier
+        } else {
+            LazyColumn(
+                modifier = Modifier
                         .fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 items(
                     items = vouchers,
                     key = { it.id }

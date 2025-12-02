@@ -39,5 +39,18 @@ interface VoucherDao {
     
     @Query("DELETE FROM vouchers WHERE status = 'pending'")
     suspend fun deleteAllPending()
+    
+    /**
+     * Update sender name for all vouchers from a specific phone number.
+     * Used for syncing when a sender is added/updated in approved senders list.
+     */
+    @Query("UPDATE vouchers SET senderName = :newName WHERE senderPhone = :phone")
+    suspend fun updateSenderNameByPhone(phone: String, newName: String?)
+    
+    /**
+     * Get all vouchers from a specific sender phone (for sync operations).
+     */
+    @Query("SELECT * FROM vouchers WHERE senderPhone = :phone")
+    suspend fun getVouchersByPhone(phone: String): List<VoucherEntity>
 }
 
