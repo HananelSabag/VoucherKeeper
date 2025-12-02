@@ -6,12 +6,17 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
@@ -28,11 +33,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.shadow
 import com.hananel.voucherkeeper.R
 import com.hananel.voucherkeeper.data.local.entity.VoucherEntity
 import java.text.SimpleDateFormat
@@ -52,6 +60,7 @@ fun PendingVoucherCard(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     var showRejectDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
     var showUrlDialog by remember { mutableStateOf(false) }
@@ -84,6 +93,11 @@ fun PendingVoucherCard(
                     Box(
                         modifier = Modifier
                             .size(48.dp)
+                            .shadow(
+                                elevation = 2.dp,
+                                shape = androidx.compose.foundation.shape.CircleShape,
+                                clip = false
+                            )
                             .clip(androidx.compose.foundation.shape.CircleShape)
                             .background(MaterialTheme.colorScheme.tertiary),
                         contentAlignment = Alignment.Center
@@ -150,27 +164,37 @@ fun PendingVoucherCard(
                     }
                     
                     // Pending badge
-                    Surface(
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = scaleIn(
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ) + fadeIn()
                     ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        Surface(
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Warning,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp),
-                                tint = MaterialTheme.colorScheme.tertiary
-                            )
-                            Text(
-                                text = stringResource(R.string.nav_pending),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                            )
+                            Row(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Warning,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp),
+                                    tint = MaterialTheme.colorScheme.tertiary
+                                )
+                                Text(
+                                    text = stringResource(R.string.nav_pending),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
@@ -182,13 +206,21 @@ fun PendingVoucherCard(
             
             // Voucher details
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                // Amount
-                voucher.amount?.let { amount ->
+                // Amount or missing amount indicator
+                if (voucher.amount != null) {
                     PendingDetailRow(
                         icon = Icons.Filled.Info,
-                        label = stringResource(R.string.voucher_amount, amount),
+                        label = stringResource(R.string.voucher_amount, voucher.amount),
                         color = MaterialTheme.colorScheme.tertiary,
                         emphasized = true
+                    )
+                } else {
+                    // Show subtle "amount not found" indicator
+                    Text(
+                        text = stringResource(R.string.voucher_amount_not_found),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(start = 4.dp)
                     )
                 }
                 
@@ -272,7 +304,7 @@ fun PendingVoucherCard(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.ArrowForward,
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.tertiary,
                                     modifier = Modifier.size(20.dp)
@@ -315,7 +347,7 @@ fun PendingVoucherCard(
                                     )
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.ArrowForward,
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                         contentDescription = null,
                                         modifier = Modifier.size(16.dp)
                                     )
@@ -387,7 +419,10 @@ fun PendingVoucherCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 OutlinedButton(
-                    onClick = { showRejectDialog = true },
+                    onClick = { 
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        showRejectDialog = true 
+                    },
                     modifier = Modifier.weight(1f),
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -404,7 +439,10 @@ fun PendingVoucherCard(
                 }
                 
                 Button(
-                    onClick = { onApprove(voucher.id) },
+                    onClick = { 
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onApprove(voucher.id) 
+                    },
                     modifier = Modifier.weight(1f),
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
                 ) {
@@ -420,7 +458,10 @@ fun PendingVoucherCard(
             
             // Optional: Add sender to approved list
             OutlinedButton(
-                onClick = { onApproveWithSender(voucher) },
+                onClick = { 
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onApproveWithSender(voucher) 
+                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.outlinedButtonColors(

@@ -1,5 +1,7 @@
 package com.hananel.voucherkeeper.ui.screen
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hananel.voucherkeeper.BuildConfig
 import com.hananel.voucherkeeper.R
 import com.hananel.voucherkeeper.ui.viewmodel.SettingsViewModel
+import kotlinx.coroutines.launch
 
 /**
  * Settings screen - app preferences and configuration.
@@ -36,6 +40,10 @@ fun SettingsScreen(
     val notifyApproved by viewModel.notifyApproved.collectAsState()
     val notifyPending by viewModel.notifyPending.collectAsState()
     val strictMode by viewModel.strictMode.collectAsState()
+    
+    // For export functionality
+    val scope = rememberCoroutineScope()
+    var isExporting by remember { mutableStateOf(false) }
     
     Scaffold(
         topBar = {
@@ -167,6 +175,90 @@ fun SettingsScreen(
             ) {
                 Text(stringResource(R.string.settings_approved_senders))
             }
+            
+            HorizontalDivider()
+            
+            // Data Management Section
+            Text(
+                text = stringResource(R.string.export_section_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            
+            // Export CSV Button
+            Button(
+                onClick = {
+                    scope.launch {
+                        isExporting = true
+                        val csvFile = viewModel.exportVouchersToCSV(context)
+                        isExporting = false
+                        
+                        if (csvFile != null) {
+                            // Show success message
+                            val voucherCount = csvFile.readLines().size - 2 // Excluding header and BOM
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.export_success, voucherCount),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            
+                            // Open share sheet to let user choose how to share/open the file
+                            try {
+                                val uri = FileProvider.getUriForFile(
+                                    context,
+                                    "${context.packageName}.fileprovider",
+                                    csvFile
+                                )
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/csv"
+                                    putExtra(Intent.EXTRA_STREAM, uri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                context.startActivity(Intent.createChooser(shareIntent, null))
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    context,
+                                    "File saved: ${csvFile.absolutePath}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        } else {
+                            // Show empty or error message
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.export_empty),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                enabled = !isExporting
+            ) {
+                if (isExporting) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                } else {
+                    Text(
+                        text = "📄",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text(stringResource(R.string.export_csv_button))
+            }
+            
+            Text(
+                text = stringResource(R.string.export_csv_description),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             
             HorizontalDivider()
             

@@ -67,8 +67,8 @@
     <string name="settings_notify_approved">התראה על שובר חדש</string>
     <string name="settings_notify_pending">התראה על הודעה הממתינה לבדיקה</string>
     <string name="settings_filters">סינונים</string>
-    <string name="settings_strict_mode">קבל רק משולחים מאושרים</string>
-    <string name="settings_strict_mode_desc">שולחים לא מוכרים יידחו אוטומטית</string>
+    <string name="settings_strict_mode">מצב מוגבל - רק שולחים מאושרים</string>
+    <string name="settings_strict_mode_desc">רק שולחים מאושרים ששמרת ידנית יישמרו. הודעות אחרות יידחו.</string>
     <string name="settings_approved_senders">ניהול שולחים מאושרים</string>
     <string name="settings_trusted_domains">ניהול דומיינים מהימנים</string>
     <string name="settings_about">אודות</string>
@@ -127,7 +127,7 @@
     <string name="onboarding_add_sender">הוסף שולח מאושר</string>
     <string name="onboarding_skip_for_now">דלג לעכשיו</string>
     <string name="onboarding_strict_mode_title">🔒 מצב מוגבל</string>
-    <string name="onboarding_strict_mode_desc">🔓 כבוי (מומלץ): האלגוריתם החכם סורק את כל ההודעות, מזהה שוברים אמיתיים ודוחה ספאם אוטומטית.\n\n🔒 מופעל: רק שולחים מאושרים ששמרת ידנית יישמרו. הודעות אחרות יידחו.</string>
+    <string name="onboarding_strict_mode_desc">🔓 כבוי (מומלץ): האלגוריתם החכם סורק את כל ההודעות, מזהה שוברים אמיתיים ודוחה ספאם אוטומטית.\n\n🔒 מופעל: רק שולחים מאושרים ששמרת ידנית יישמרו. הודעות אחרות יידחו.\n\nתמיד תוכל לשנות הגדרה זו במסך ההגדרות באפליקציה.</string>
     <string name="onboarding_strict_mode_enable">הפעל מצב מוגבל</string>
     <string name="onboarding_strict_mode_recommendation">✓ מומלץ: השאר כבוי - האלגוריתם חזק מספיק!</string>
     <string name="onboarding_permissions_warning_title">נדרשות הרשאות</string>
@@ -230,6 +230,14 @@
     <string name="voucher_amount_not_found">סכום לא נמצא</string>
     <string name="voucher_additional_info">עוד %1$d מאותו שולח · סה״כ: %2$s</string>
     <string name="voucher_additional_info_no_amount">עוד %1$d מאותו שולח · (סכומים חלקיים)</string>
+    
+    <!-- Data Export -->
+    <string name="export_section_title">ניהול נתונים</string>
+    <string name="export_csv_button">ייצא שוברים ל-CSV</string>
+    <string name="export_csv_description">ייצא את כל השוברים המאושרים לקובץ אקסל</string>
+    <string name="export_success">%1$d שוברים יוצאו בהצלחה!</string>
+    <string name="export_empty">אין שוברים לייצוא</string>
+    <string name="export_error">הייצוא נכשל. נסה שוב.</string>
     
     <!-- Content Descriptions (Accessibility) -->
     <string name="cd_voucher_card">כרטיס שובר</string>

@@ -14,7 +14,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 
 /**
@@ -110,7 +112,12 @@ class SmsReceiver : BroadcastReceiver() {
             receiverScope.launch {
                 try {
                     Log.d(TAG, "Starting voucher repository processing...")
-                    val decision = voucherRepository.processSmsMessage(message)
+                    
+                    // Add timeout protection (max 25 seconds)
+                    val decision = withTimeout(25000) {
+                        voucherRepository.processSmsMessage(message)
+                    }
+                    
                     Log.d(TAG, "Decision: ${decision.javaClass.simpleName}")
                     
                     // Send notification based on decision
@@ -132,6 +139,8 @@ class SmsReceiver : BroadcastReceiver() {
                             Log.d(TAG, "✗ DISCARDED - Not a voucher")
                         }
                     }
+                } catch (e: TimeoutCancellationException) {
+                    Log.e(TAG, "TIMEOUT processing SMS (took > 25 seconds)")
                 } catch (e: Exception) {
                     Log.e(TAG, "ERROR processing SMS: ${e.message}", e)
                     e.printStackTrace()

@@ -6,14 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -26,11 +31,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.shadow
 import com.hananel.voucherkeeper.R
 import com.hananel.voucherkeeper.data.local.entity.VoucherEntity
 import java.text.SimpleDateFormat
@@ -52,6 +60,7 @@ fun VoucherCard(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
     var showUrlDialog by remember { mutableStateOf(false) }
@@ -84,6 +93,11 @@ fun VoucherCard(
                     Box(
                         modifier = Modifier
                             .size(48.dp)
+                            .shadow(
+                                elevation = 2.dp,
+                                shape = androidx.compose.foundation.shape.CircleShape,
+                                clip = false
+                            )
                             .clip(androidx.compose.foundation.shape.CircleShape)
                             .background(MaterialTheme.colorScheme.secondary),
                         contentAlignment = Alignment.Center
@@ -135,31 +149,41 @@ fun VoucherCard(
                         // Show summary badge if there are other vouchers from same sender
                         if (otherVouchersCount > 0) {
                             Spacer(modifier = Modifier.height(4.dp))
-                            Surface(
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
-                                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
+                            AnimatedVisibility(
+                                visible = true,
+                                enter = scaleIn(
+                                    animationSpec = spring(
+                                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                                        stiffness = Spring.StiffnessLow
+                                    )
+                                ) + fadeIn()
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                Surface(
+                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
+                                    color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Info,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(12.dp),
-                                        tint = MaterialTheme.colorScheme.secondary
-                                    )
-                                    Text(
-                                        text = if (totalAmount != null) {
-                                            stringResource(R.string.voucher_additional_info, otherVouchersCount, totalAmount)
-                                        } else {
-                                            stringResource(R.string.voucher_additional_info_no_amount, otherVouchersCount)
-                                        },
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.secondary,
-                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
-                                    )
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Info,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(12.dp),
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
+                                        Text(
+                                            text = if (totalAmount != null) {
+                                                stringResource(R.string.voucher_additional_info, otherVouchersCount, totalAmount)
+                                            } else {
+                                                stringResource(R.string.voucher_additional_info_no_amount, otherVouchersCount)
+                                            },
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -181,7 +205,10 @@ fun VoucherCard(
                     }
                     
                     IconButton(
-                        onClick = { showDeleteDialog = true },
+                        onClick = { 
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            showDeleteDialog = true 
+                        },
                         modifier = Modifier.size(36.dp)
                     ) {
                         Icon(
@@ -200,13 +227,21 @@ fun VoucherCard(
             
             // Voucher details
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                // Amount
-                voucher.amount?.let { amount ->
+                // Amount or missing amount indicator
+                if (voucher.amount != null) {
                     VoucherDetailRow(
                         icon = Icons.Filled.Info,
-                        label = stringResource(R.string.voucher_amount, amount),
+                        label = stringResource(R.string.voucher_amount, voucher.amount),
                         color = MaterialTheme.colorScheme.secondary,
                         emphasized = true
+                    )
+                } else {
+                    // Show subtle "amount not found" indicator
+                    Text(
+                        text = stringResource(R.string.voucher_amount_not_found),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(start = 4.dp)
                     )
                 }
                 
@@ -287,7 +322,7 @@ fun VoucherCard(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.ArrowForward,
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.secondary,
                                     modifier = Modifier.size(20.dp)
@@ -327,7 +362,7 @@ fun VoucherCard(
                                     shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.ArrowForward,
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                         contentDescription = null,
                                         modifier = Modifier.size(16.dp)
                                     )
