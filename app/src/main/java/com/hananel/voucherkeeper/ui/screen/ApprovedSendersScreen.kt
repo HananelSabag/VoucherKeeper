@@ -1,5 +1,6 @@
 package com.hananel.voucherkeeper.ui.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,16 +12,18 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hananel.voucherkeeper.R
@@ -48,11 +51,10 @@ fun ApprovedSendersScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(32.dp)
+                        Image(
+                            painter = painterResource(id = R.drawable.app_logo),
+                            contentDescription = "Logo",
+                            modifier = Modifier.size(40.dp)
                         )
                         Text(
                             text = stringResource(R.string.approved_senders_title),
@@ -142,10 +144,15 @@ fun ApprovedSendersScreen(
 @Composable
 private fun EmptyState(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = "👥",
+            style = MaterialTheme.typography.displayLarge,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
         Text(
             text = stringResource(R.string.approved_senders_empty),
             style = MaterialTheme.typography.headlineMedium,
@@ -156,8 +163,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             text = stringResource(R.string.approved_senders_empty_desc),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 32.dp)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -348,18 +354,35 @@ private fun AddSenderDialog(
                         }
                     }
                     
-                    OutlinedTextField(
-                        value = phoneNumber,
-                        onValueChange = { input ->
-                            phoneNumber = input.filter { it.isDigit() }
-                            showError = false
-                        },
-                        placeholder = { Text("542199006") },
-                        enabled = systemName.isBlank(),
-                        isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
-                        singleLine = true,
-                        modifier = Modifier.weight(1f)
-                    )
+                    // Force LTR for phone number field
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        OutlinedTextField(
+                            value = phoneNumber,
+                            onValueChange = { input ->
+                                // Handle pasted Israeli number starting with 0
+                                val cleaned = input.filter { it.isDigit() }
+                                phoneNumber = if (cleaned.startsWith("0") && cleaned.length >= 9) {
+                                    // Convert 0549999999 (mobile) or 026780270 (landline) to without 0
+                                    cleaned.substring(1)
+                                } else {
+                                    cleaned
+                                }
+                                showError = false
+                            },
+                            placeholder = { 
+                                Text(
+                                    "050-999-9999, 02-999-9999",
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                                    )
+                                )
+                            },
+                            enabled = systemName.isBlank(),
+                            isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
+                            singleLine = true,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
                 
                 // OR divider
@@ -561,18 +584,35 @@ private fun EditSenderDialog(
                         }
                     }
                     
-                    OutlinedTextField(
-                        value = phoneNumber,
-                        onValueChange = { input ->
-                            phoneNumber = input.filter { it.isDigit() }
-                            showError = false
-                        },
-                        placeholder = { Text("542199006") },
-                        enabled = systemName.isBlank(),
-                        isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
-                        singleLine = true,
-                        modifier = Modifier.weight(1f)
-                    )
+                    // Force LTR for phone number field
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                        OutlinedTextField(
+                            value = phoneNumber,
+                            onValueChange = { input ->
+                                // Handle pasted Israeli number starting with 0
+                                val cleaned = input.filter { it.isDigit() }
+                                phoneNumber = if (cleaned.startsWith("0") && cleaned.length >= 9) {
+                                    // Convert 0549999999 (mobile) or 026780270 (landline) to without 0
+                                    cleaned.substring(1)
+                                } else {
+                                    cleaned
+                                }
+                                showError = false
+                            },
+                            placeholder = { 
+                                Text(
+                                    "050-999-9999, 02-999-9999",
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                                    )
+                                )
+                            },
+                            enabled = systemName.isBlank(),
+                            isError = showError && phoneNumber.isBlank() && systemName.isBlank(),
+                            singleLine = true,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
                 
                 // OR divider

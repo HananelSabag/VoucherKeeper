@@ -67,8 +67,8 @@
     <string name="settings_notify_approved">Notify on new voucher</string>
     <string name="settings_notify_pending">Notify on pending review</string>
     <string name="settings_filters">Filters</string>
-    <string name="settings_strict_mode">Only accept from approved senders</string>
-    <string name="settings_strict_mode_desc">Unknown senders will be rejected automatically</string>
+    <string name="settings_strict_mode">Strict Mode - Only approved senders</string>
+    <string name="settings_strict_mode_desc">Only manually approved senders will be saved. Other messages will be rejected.</string>
     <string name="settings_approved_senders">Manage Approved Senders</string>
     <string name="settings_trusted_domains">Manage Trusted Domains</string>
     <string name="settings_about">About</string>
@@ -127,7 +127,7 @@
     <string name="onboarding_add_sender">Add Approved Sender</string>
     <string name="onboarding_skip_for_now">Skip for now</string>
     <string name="onboarding_strict_mode_title">🔒 Strict Mode</string>
-    <string name="onboarding_strict_mode_desc">🔓 OFF (Recommended): Smart algorithm scans all messages, identifies real vouchers and rejects spam automatically.\n\n🔒 ON: Only manually approved senders will be saved. Other messages will be rejected.</string>
+    <string name="onboarding_strict_mode_desc">🔓 OFF (Recommended): Smart algorithm scans all messages, identifies real vouchers and rejects spam automatically.\n\n🔒 ON: Only manually approved senders will be saved. Other messages will be rejected.\n\nYou can always change this setting later in the Settings screen.</string>
     <string name="onboarding_strict_mode_enable">Enable Strict Mode</string>
     <string name="onboarding_strict_mode_recommendation">✓ Recommended: Keep OFF - the algorithm is strong enough!</string>
     <string name="onboarding_permissions_warning_title">Permissions Required</string>
@@ -230,6 +230,14 @@
     <string name="voucher_amount_not_found">Amount not found</string>
     <string name="voucher_additional_info">%1$d more from this sender · Total: %2$s</string>
     <string name="voucher_additional_info_no_amount">%1$d more from this sender · (amounts incomplete)</string>
+    
+    <!-- Data Export -->
+    <string name="export_section_title">Data Management</string>
+    <string name="export_csv_button">Export Vouchers to CSV</string>
+    <string name="export_csv_description">Export all approved vouchers to a spreadsheet file</string>
+    <string name="export_success">Exported %1$d vouchers successfully!</string>
+    <string name="export_empty">No vouchers to export</string>
+    <string name="export_error">Export failed. Please try again.</string>
     
     <!-- Content Descriptions (Accessibility) -->
     <string name="cd_voucher_card">Voucher card</string>

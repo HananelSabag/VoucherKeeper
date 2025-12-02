@@ -2,6 +2,7 @@ package com.hananel.voucherkeeper.ui.screen
 
 import android.Manifest
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -73,6 +74,24 @@ fun OnboardingScreen(
             }
         }
         Unit
+    }
+    
+    // Handle system back button
+    BackHandler(enabled = true) {
+        when {
+            // If showing help dialog (showCloseButton = true), close it
+            showCloseButton -> {
+                onComplete()
+            }
+            // If in onboarding flow, go back a page or do nothing on first page
+            currentPage > 0 -> {
+                currentPage--
+            }
+            // First page of onboarding - do nothing (force user to complete)
+            else -> {
+                // Do nothing - user must complete onboarding
+            }
+        }
     }
     
     Surface(
