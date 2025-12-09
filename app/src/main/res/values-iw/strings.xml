@@ -53,6 +53,14 @@
     <string name="action_add_sender">הוסף שולח לרשימת מאושרים</string>
     <string name="action_add_voucher_manually">הוסף שובר</string>
     <string name="action_add_approved_sender">הוסף שולח</string>
+    <string name="action_mark_redeemed">מומש</string>
+    <string name="action_restore">שחזר</string>
+    
+    <!-- Redeemed Voucher -->
+    <string name="voucher_redeemed_badge">נוצל</string>
+    <string name="dialog_redeem_title">לסמן כמומש?</string>
+    <string name="dialog_redeem_message">השובר יעבור לסוף הרשימה. תוכל לשחזר אותו בכל עת או למחוק אותו מאוחר יותר.</string>
+    <string name="dialog_redeem_confirm">סמן כמומש</string>
     
     <!-- Settings Screen -->
     <string name="settings_title">הגדרות</string>
