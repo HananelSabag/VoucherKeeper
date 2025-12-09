@@ -94,5 +94,23 @@ class ApprovedVouchersViewModel @Inject constructor(
             voucherRepository.updateVoucher(voucherId, newName, newAmount, newMerchant, newUrl, newCode)
         }
     }
+    
+    /**
+     * Mark a voucher as redeemed (moves to end of list).
+     */
+    fun markAsRedeemed(voucherId: Long) {
+        viewModelScope.launch {
+            voucherRepository.markAsRedeemed(voucherId)
+        }
+    }
+    
+    /**
+     * Unmark a voucher as redeemed (restore to active).
+     */
+    fun unmarkAsRedeemed(voucherId: Long) {
+        viewModelScope.launch {
+            voucherRepository.unmarkAsRedeemed(voucherId)
+        }
+    }
 }
 

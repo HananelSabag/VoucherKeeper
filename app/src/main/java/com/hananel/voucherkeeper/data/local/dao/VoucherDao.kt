@@ -10,7 +10,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface VoucherDao {
     
-    @Query("SELECT * FROM vouchers WHERE status = 'approved' ORDER BY timestamp DESC")
+    /**
+     * Get approved vouchers sorted: active first (by timestamp desc), then redeemed (by redeemedAt desc)
+     */
+    @Query("""
+        SELECT * FROM vouchers 
+        WHERE status = 'approved' 
+        ORDER BY isRedeemed ASC, 
+                 CASE WHEN isRedeemed = 0 THEN timestamp ELSE redeemedAt END DESC
+    """)
     fun getApprovedVouchers(): Flow<List<VoucherEntity>>
     
     @Query("SELECT * FROM vouchers WHERE status = 'pending' ORDER BY timestamp DESC")
@@ -39,6 +47,18 @@ interface VoucherDao {
     
     @Query("DELETE FROM vouchers WHERE status = 'pending'")
     suspend fun deleteAllPending()
+    
+    /**
+     * Mark a voucher as redeemed.
+     */
+    @Query("UPDATE vouchers SET isRedeemed = 1, redeemedAt = :redeemedAt WHERE id = :id")
+    suspend fun markAsRedeemed(id: Long, redeemedAt: Long)
+    
+    /**
+     * Unmark a voucher as redeemed (restore it).
+     */
+    @Query("UPDATE vouchers SET isRedeemed = 0, redeemedAt = NULL WHERE id = :id")
+    suspend fun unmarkAsRedeemed(id: Long)
     
     /**
      * Update sender name for all vouchers from a specific phone number.

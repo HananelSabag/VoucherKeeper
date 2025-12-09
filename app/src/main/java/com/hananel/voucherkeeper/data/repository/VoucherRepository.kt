@@ -260,6 +260,21 @@ class VoucherRepository @Inject constructor(
     }
     
     /**
+     * Mark a voucher as redeemed.
+     * Redeemed vouchers will be sorted to the end of the list.
+     */
+    suspend fun markAsRedeemed(voucherId: Long) {
+        voucherDao.markAsRedeemed(voucherId, System.currentTimeMillis())
+    }
+    
+    /**
+     * Unmark a voucher as redeemed (restore it to active).
+     */
+    suspend fun unmarkAsRedeemed(voucherId: Long) {
+        voucherDao.unmarkAsRedeemed(voucherId)
+    }
+    
+    /**
      * Sync sender display name to all existing vouchers from that phone number.
      * Called when a sender is added or updated in approved senders list.
      * 
