@@ -16,8 +16,6 @@ import androidx.room.PrimaryKey
  * @property senderName SMS sender name (if available)
  * @property rawMessage Original SMS message content
  * @property timestamp Message reception timestamp (epoch millis)
- * @property isRedeemed Whether the voucher has been marked as redeemed
- * @property redeemedAt Timestamp when voucher was marked as redeemed (epoch millis)
  */
 @Entity(tableName = "vouchers")
 data class VoucherEntity(
@@ -31,8 +29,6 @@ data class VoucherEntity(
     val senderPhone: String,
     val senderName: String? = null,
     val rawMessage: String,
-    val timestamp: Long,
-    val isRedeemed: Boolean = false,
-    val redeemedAt: Long? = null
+    val timestamp: Long
 )
 

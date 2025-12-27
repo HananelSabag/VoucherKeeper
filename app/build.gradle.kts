@@ -14,19 +14,10 @@ android {
         applicationId = "com.hananel.voucherkeeper"
         minSdk = 33
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file("release.keystore")
-            storePassword = "VoucherKeeper2024!"
-            keyAlias = "voucherkeeper"
-            keyPassword = "VoucherKeeper2024!"
-        }
     }
 
     buildTypes {
@@ -37,11 +28,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            // TODO: Add signing config before release
+            // signingConfig = signingConfigs.getByName("release")
         }
         debug {
             isMinifyEnabled = false
             applicationIdSuffix = ".debug"
+            versionNameSuffix = "-DEBUG"
         }
     }
     compileOptions {

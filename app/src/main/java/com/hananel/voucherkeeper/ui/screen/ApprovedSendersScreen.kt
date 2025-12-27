@@ -12,8 +12,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults
@@ -179,16 +177,10 @@ private fun SenderCard(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
     
-    // Determine if this is a phone number or system name
-    val isPhoneNumber = sender.phone.startsWith("+") || sender.phone.all { it.isDigit() || it == '-' || it == ' ' }
-    
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -197,94 +189,38 @@ private fun SenderCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
-            ) {
-                // Avatar
-                Surface(
-                    shape = androidx.compose.foundation.shape.CircleShape,
-                    color = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Icon(
-                        imageVector = if (isPhoneNumber) Icons.Default.Phone else Icons.Default.Person,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .size(24.dp)
+            Column(modifier = Modifier.weight(1f)) {
+                if (sender.name != null) {
+                    Text(
+                        text = sender.name,
+                        style = MaterialTheme.typography.titleMedium
                     )
-                }
-                
-                Column {
-                    if (sender.name != null) {
-                        Text(
-                            text = sender.name,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = if (isPhoneNumber) Icons.Default.Phone else Icons.Default.Info,
-                                contentDescription = null,
-                                modifier = Modifier.size(12.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                            )
-                            Text(
-                                text = sender.phone,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = sender.phone,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        // Type badge
-                        Surface(
-                            shape = RoundedCornerShape(6.dp),
-                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
-                        ) {
-                            Text(
-                                text = if (isPhoneNumber) "📱 Phone" else "🏢 System",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        }
-                    }
+                    Text(
+                        text = sender.phone,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    Text(
+                        text = sender.phone,
+                        style = MaterialTheme.typography.titleMedium
+                    )
                 }
             }
             
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                IconButton(
-                    onClick = { showEditDialog = true },
-                    modifier = Modifier.size(40.dp)
-                ) {
+            Row {
+                IconButton(onClick = { showEditDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = stringResource(R.string.action_edit),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
-                IconButton(
-                    onClick = { showDeleteDialog = true },
-                    modifier = Modifier.size(40.dp)
-                ) {
+                IconButton(onClick = { showDeleteDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = stringResource(R.string.action_delete),
-                        tint = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
-                        modifier = Modifier.size(20.dp)
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
             }

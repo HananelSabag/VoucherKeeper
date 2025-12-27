@@ -60,57 +60,5 @@ class ApprovedVouchersViewModel @Inject constructor(
             )
         }
     }
-    
-    /**
-     * Update voucher sender name.
-     */
-    fun updateVoucherName(voucherId: Long, newName: String) {
-        viewModelScope.launch {
-            voucherRepository.updateVoucherName(voucherId, newName)
-        }
-    }
-    
-    /**
-     * Update voucher amount.
-     */
-    fun updateVoucherAmount(voucherId: Long, newAmount: String?) {
-        viewModelScope.launch {
-            voucherRepository.updateVoucherAmount(voucherId, newAmount)
-        }
-    }
-    
-    /**
-     * Update voucher full details.
-     */
-    fun updateVoucher(
-        voucherId: Long,
-        newName: String?,
-        newAmount: String?,
-        newMerchant: String?,
-        newUrl: String?,
-        newCode: String?
-    ) {
-        viewModelScope.launch {
-            voucherRepository.updateVoucher(voucherId, newName, newAmount, newMerchant, newUrl, newCode)
-        }
-    }
-    
-    /**
-     * Mark a voucher as redeemed (moves to end of list).
-     */
-    fun markAsRedeemed(voucherId: Long) {
-        viewModelScope.launch {
-            voucherRepository.markAsRedeemed(voucherId)
-        }
-    }
-    
-    /**
-     * Unmark a voucher as redeemed (restore to active).
-     */
-    fun unmarkAsRedeemed(voucherId: Long) {
-        viewModelScope.launch {
-            voucherRepository.unmarkAsRedeemed(voucherId)
-        }
-    }
 }
 

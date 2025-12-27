@@ -30,8 +30,7 @@ object DatabaseModule {
             VoucherDatabase::class.java,
             "voucher_keeper_db"
         )
-            .addMigrations(VoucherDatabase.MIGRATION_1_2)
-            .fallbackToDestructiveMigration() // Fallback for any unexpected migrations
+            .fallbackToDestructiveMigration()
             .build()
     }
     

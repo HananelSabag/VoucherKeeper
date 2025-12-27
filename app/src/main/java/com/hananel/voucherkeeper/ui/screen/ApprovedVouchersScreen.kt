@@ -99,88 +99,35 @@ fun ApprovedVouchersScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Enhanced counter with active/redeemed breakdown
+            // Compact counter badge (only if vouchers exist)
             if (vouchers.isNotEmpty()) {
-                val activeCount = vouchers.count { !it.isRedeemed }
-                val redeemedCount = vouchers.count { it.isRedeemed }
-                
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Total vouchers
                     Surface(
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "🎫",
-                                style = MaterialTheme.typography.labelMedium
-                            )
-                            Text(
-                                text = vouchers.size.toString(),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.voucher_counter_label),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                    Text(
+                        text = vouchers.size.toString(),
                                 style = MaterialTheme.typography.labelLarge,
-                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                    
-                    // Active vouchers
-                    if (activeCount > 0) {
-                        Surface(
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "✅",
-                                    style = MaterialTheme.typography.labelMedium
-                                )
-                                Text(
-                                    text = activeCount.toString(),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                        }
-                    }
-                    
-                    // Redeemed vouchers
-                    if (redeemedCount > 0) {
-                        Surface(
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "☑️",
-                                    style = MaterialTheme.typography.labelMedium
-                                )
-                                Text(
-                                    text = redeemedCount.toString(),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.secondary
+                    )
                         }
                     }
                 }
@@ -234,8 +181,6 @@ fun ApprovedVouchersScreen(
                     VoucherCard(
                         voucher = voucher,
                         onDelete = { viewModel.deleteVoucher(it) },
-                        onMarkRedeemed = { viewModel.markAsRedeemed(it) },
-                        onUnmarkRedeemed = { viewModel.unmarkAsRedeemed(it) },
                         onUpdateName = { id, name -> viewModel.updateVoucherName(id, name) },
                         onUpdateAmount = { id, amount -> viewModel.updateVoucherAmount(id, amount) },
                         onUpdateVoucher = { id: Long, name: String?, amount: String?, merchant: String?, url: String?, code: String? -> 
