@@ -21,3 +21,8 @@ KEYSTORE_INFO.txt
 
 # Release artifacts - contains signed AAB and keystore
 /release
+
+# IDE folder and build outputs (APKs are published as GitHub Releases)
+.idea/
+*.apk
+*.aab

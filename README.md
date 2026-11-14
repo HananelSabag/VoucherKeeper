@@ -237,6 +237,12 @@ Shows additional vouchers from the same sender:
 
 ### Installation
 
+**Just want to try it?** Download the APK from the
+[latest release](https://github.com/HananelSabag/VoucherKeeper/releases/latest)
+and install it on an Android 13+ phone.
+
+**Build from source:**
+
 1. **Clone the repository**
    ```bash
    git clone https://github.com/HananelSabag/VoucherKeeper.git
